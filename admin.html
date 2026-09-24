@@ -49,6 +49,7 @@
   }
 
   #loginBox h2 { margin-top: 0; color: #12233d; }
+  [data-theme="dark"] #loginBox h2 { color: var(--text-primary); }
 
   #loginBox input {
     width: 100%;
@@ -210,9 +211,9 @@
   #courseForm h4 { color: #12233d; margin: 18px 0 8px; }
 
   .secondaryBtn {
-    background: white;
-    border: 1px solid #d8d2c2;
-    color: #12233d;
+    background: var(--card-bg);
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
     padding: 8px 14px;
     border-radius: 8px;
     font-size: 13px;
@@ -497,8 +498,8 @@
 
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, setDoc, getDoc, where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBkavWHN37Qu-4UphxFDihacSJJfbjD9Io",
@@ -592,10 +593,14 @@ document.getElementById("footerYear").textContent = new Date().getFullYear();
       const a = docSnap.data();
       const div = document.createElement("div");
       div.className = "courseRow";
-      div.innerHTML = `
-        <span>${a.text}</span>
-        <button data-id="${docSnap.id}" class="deleteAnnouncementBtn deleteBtn">Delete</button>
-      `;
+      const textSpan = document.createElement("span");
+      textSpan.textContent = String(a.text || "");
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.dataset.id = docSnap.id;
+      deleteBtn.className = "deleteAnnouncementBtn deleteBtn";
+      deleteBtn.textContent = "Delete";
+      div.append(textSpan, deleteBtn);
       container.appendChild(div);
     });
 
@@ -830,12 +835,27 @@ function addNoteSection(heading = "", body = "") {
   const div = document.createElement("div");
   div.className = "noteSection";
   div.dataset.id = id;
-  div.style.cssText = "border:1px solid #d8d2c2; border-radius:6px; padding:10px; margin-bottom:8px;";
-  div.innerHTML = `
-    <input type="text" class="noteHeadingInput" placeholder="Note heading" value="${heading}" style="width:100%; margin-bottom:6px;">
-    <textarea class="noteBodyInput" placeholder="Note content" rows="3" style="width:100%;">${body}</textarea>
-    <button type="button" class="removeNoteBtn" style="margin-top:6px; background:#c0392b; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">Remove</button>
-  `;
+  div.style.cssText = "border:1px solid var(--border-strong); border-radius:6px; padding:10px; margin-bottom:8px;";
+  const headingInput = document.createElement("input");
+  headingInput.type = "text";
+  headingInput.className = "noteHeadingInput";
+  headingInput.placeholder = "Note heading";
+  headingInput.value = String(heading || "");
+  headingInput.style.cssText = "width:100%; margin-bottom:6px;";
+
+  const bodyInput = document.createElement("textarea");
+  bodyInput.className = "noteBodyInput";
+  bodyInput.placeholder = "Note content";
+  bodyInput.rows = 3;
+  bodyInput.value = String(body || "");
+  bodyInput.style.cssText = "width:100%;";
+
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button";
+  removeBtn.className = "removeNoteBtn";
+  removeBtn.textContent = "Remove";
+  removeBtn.style.cssText = "margin-top:6px; background:#c0392b; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;";
+  div.append(headingInput, bodyInput, removeBtn);
   div.querySelector(".removeNoteBtn").addEventListener("click", () => div.remove());
   document.getElementById("notesContainer").appendChild(div);
 }
@@ -846,12 +866,27 @@ function addQaItem(question = "", answer = "") {
   const div = document.createElement("div");
   div.className = "qaItem";
   div.dataset.id = id;
-  div.style.cssText = "border:1px solid #d8d2c2; border-radius:6px; padding:10px; margin-bottom:8px;";
-  div.innerHTML = `
-    <input type="text" class="qaQuestionInput" placeholder="Question" value="${question}" style="width:100%; margin-bottom:6px;">
-    <textarea class="qaAnswerInput" placeholder="Answer" rows="2" style="width:100%;">${answer}</textarea>
-    <button type="button" class="removeQaBtn" style="margin-top:6px; background:#c0392b; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">Remove</button>
-  `;
+  div.style.cssText = "border:1px solid var(--border-strong); border-radius:6px; padding:10px; margin-bottom:8px;";
+  const questionInput = document.createElement("input");
+  questionInput.type = "text";
+  questionInput.className = "qaQuestionInput";
+  questionInput.placeholder = "Question";
+  questionInput.value = String(question || "");
+  questionInput.style.cssText = "width:100%; margin-bottom:6px;";
+
+  const answerInput = document.createElement("textarea");
+  answerInput.className = "qaAnswerInput";
+  answerInput.placeholder = "Answer";
+  answerInput.rows = 2;
+  answerInput.value = String(answer || "");
+  answerInput.style.cssText = "width:100%;";
+
+  const removeBtn = document.createElement("button");
+  removeBtn.type = "button";
+  removeBtn.className = "removeQaBtn";
+  removeBtn.textContent = "Remove";
+  removeBtn.style.cssText = "margin-top:6px; background:#c0392b; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;";
+  div.append(questionInput, answerInput, removeBtn);
   div.querySelector(".removeQaBtn").addEventListener("click", () => div.remove());
   document.getElementById("qaContainer").appendChild(div);
 }
@@ -924,15 +959,29 @@ async function loadAdminCourseList() {
 
  const levelColors = { "100L": "#4a90a4", "200L": "#7d5ba6", "300L": "#c8712f", "400L": "#2e7d5b" };
 const div = document.createElement("div");
-div.style.cssText = `border:1px solid #d8d2c2; border-left:4px solid ${levelColors[course.level] || "#0d9488"}; border-radius:6px; padding:10px 14px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;`;
+div.className = "courseRow";
+div.style.borderLeft = `4px solid ${levelColors[course.level] || "#0d9488"}`;
 
-    div.innerHTML = `
-      <span><strong>${course.code}</strong> — ${course.title} (${course.level})</span>
-      <span>
-        <button data-id="${courseId}" class="editBtn" style="background:#12233d; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; margin-right:6px;">Edit</button>
-        <button data-id="${courseId}" class="deleteBtn" style="background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Delete</button>
-      </span>
-    `;
+    const info = document.createElement("span");
+    const strong = document.createElement("strong");
+    strong.textContent = String(course.code || "");
+    info.append(strong, document.createTextNode(` — ${String(course.title || "")} (${String(course.level || "")})`));
+
+    const actions = document.createElement("span");
+    const editBtn = document.createElement("button");
+    editBtn.type = "button";
+    editBtn.dataset.id = courseId;
+    editBtn.className = "editBtn";
+    editBtn.style.cssText = "background:#12233d; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; margin-right:6px;";
+    editBtn.textContent = "Edit";
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.dataset.id = courseId;
+    deleteBtn.className = "deleteBtn";
+    deleteBtn.style.cssText = "background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;";
+    deleteBtn.textContent = "Delete";
+    actions.append(editBtn, deleteBtn);
+    div.append(info, actions);
 
     adminCourseList.appendChild(div);
   });
@@ -1063,6 +1112,15 @@ populateSessionOptions();
     updateDonationBadge();
   }
 
+  function isSafeHttpUrl(value) {
+    try {
+      const url = new URL(String(value || ""), window.location.href);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch (_) {
+      return false;
+    }
+  }
+
   function renderDonationsList() {
     const container = document.getElementById("donationsList");
 
@@ -1083,16 +1141,40 @@ populateSessionOptions();
       div.style.alignItems = "flex-start";
       const dateStr = new Date(d.createdAt).toLocaleDateString();
 
-      div.innerHTML = `
-        <div style="display:flex; justify-content:space-between; width:100%;">
-          <strong>${d.firstName} ${d.lastName}</strong>
-          <span>₦${d.amount.toFixed(2)}</span>
-        </div>
-        <p style="font-size:12.5px; color:var(--text-muted); margin:4px 0;">
-${d.email ? d.email + " · " : ""}${dateStr}${!d.read ? " · <strong style='color:#0d9488;'>New</strong>" : ""}
-        </p>
-<a href="${d.receiptUrl}" target="_blank" style="color:#0d9488; font-size:13px;">View receipt →</a>
-      `;
+      const header = document.createElement("div");
+      header.style.cssText = "display:flex; justify-content:space-between; width:100%;";
+      const name = document.createElement("strong");
+      name.textContent = `${String(d.firstName || "")} ${String(d.lastName || "")}`.trim();
+      const amount = document.createElement("span");
+      const numericAmount = Number(d.amount);
+      amount.textContent = `₦${Number.isFinite(numericAmount) ? numericAmount.toFixed(2) : "0.00"}`;
+      header.append(name, amount);
+
+      const meta = document.createElement("p");
+      meta.style.cssText = "font-size:12.5px; color:var(--text-muted); margin:4px 0;";
+      meta.textContent = `${d.email ? String(d.email) + " · " : ""}${dateStr}`;
+      if (!d.read) {
+        const newLabel = document.createElement("strong");
+        newLabel.textContent = " · New";
+        newLabel.style.color = "#0d9488";
+        meta.appendChild(newLabel);
+      }
+
+      div.append(header, meta);
+      if (isSafeHttpUrl(d.receiptUrl)) {
+        const receiptLink = document.createElement("a");
+        receiptLink.href = String(d.receiptUrl);
+        receiptLink.target = "_blank";
+        receiptLink.rel = "noopener noreferrer";
+        receiptLink.textContent = "View receipt →";
+        receiptLink.style.cssText = "color:#0d9488; font-size:13px;";
+        div.appendChild(receiptLink);
+      } else {
+        const invalid = document.createElement("span");
+        invalid.textContent = "Receipt unavailable";
+        invalid.style.cssText = "color:var(--text-muted); font-size:13px;";
+        div.appendChild(invalid);
+      }
       container.appendChild(div);
     });
 

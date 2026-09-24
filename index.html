@@ -657,6 +657,21 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 const CLOUDINARY_CLOUD_NAME = "vfnj6izy";
 
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[char]));
+  }
+
+  function isSafeHttpUrl(value) {
+    try {
+      const url = new URL(value, window.location.href);
+      return url.protocol === "https:" || url.protocol === "http:";
+    } catch {
+      return false;
+    }
+  }
+
 document.getElementById("footerYear").textContent = new Date().getFullYear();
 
   let currentLevel = "100L";
@@ -791,7 +806,7 @@ div.style.setProperty("--level-color", levelColors[course.level] || "#0d9488");
     topRow.style.cssText = "display:flex; justify-content:space-between; align-items:flex-start;";
 
     const titleWrap = document.createElement("div");
-    titleWrap.innerHTML = `<h3>${course.code} — ${course.title}${newBadge}</h3>`;
+    titleWrap.innerHTML = `<h3>${escapeHTML(course.code)} — ${escapeHTML(course.title)}${newBadge}</h3>`;
 
 const starBtn = document.createElement("span");
 starBtn.className = "starIcon" + (isFav ? " active" : "");
@@ -835,7 +850,7 @@ starBtn.addEventListener("keydown", (e) => {
 
     const meta = document.createElement("p");
     meta.className = "courseMeta";
-    meta.innerHTML = `${course.level} · ${course.credit}${course.academicSession ? ` <span class="sessionTag">${course.academicSession}</span>` : ""}`;
+    meta.innerHTML = `${escapeHTML(course.level)} · ${escapeHTML(course.credit)}${course.academicSession ? ` <span class="sessionTag">${escapeHTML(course.academicSession)}</span>` : ""}`;
 
     const hint = document.createElement("p");
     hint.className = "courseHint";
@@ -912,6 +927,9 @@ function loadAnnouncements() {
       container.appendChild(item);
     });
     container.scrollTop = 0;
+  }, (error) => {
+    console.error("Announcements listener error:", error);
+    container.innerHTML = `<p class="emptyNote">Couldn't load announcements.</p>`;
   });
 }
 
@@ -1205,7 +1223,7 @@ input.value = "";
     const bankBox = document.getElementById("donationBankDetails");
     if (bankSnap.exists()) {
       const d = bankSnap.data();
-      bankBox.innerHTML = `${d.bankName}<br>${d.accountNumber}<br>${d.accountName}`;
+      bankBox.innerHTML = `${escapeHTML(d.bankName)}<br>${escapeHTML(d.accountNumber)}<br>${escapeHTML(d.accountName)}`;
     } else {
       bankBox.textContent = "Account details not available yet.";
     }
@@ -1368,8 +1386,8 @@ async function loadCourses(searchTerm = "") {
 
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      const matchesCode = course.code.toLowerCase().includes(term);
-      const matchesTitle = course.title.toLowerCase().includes(term);
+      const matchesCode = String(course.code || "").toLowerCase().includes(term);
+      const matchesTitle = String(course.title || "").toLowerCase().includes(term);
       if (!matchesCode && !matchesTitle) {
         return;
       }
@@ -1388,7 +1406,7 @@ async function loadCourses(searchTerm = "") {
   }
 }
 
-async function loadFavoriteCourses() {
+async function loadFavoriteCourses(searchTerm = "") {
   const courseList = document.getElementById("courseList");
 
   if (favoriteIds.size === 0) {
@@ -1403,8 +1421,17 @@ async function loadFavoriteCourses() {
   const matches = [];
   querySnapshot.forEach((docSnap) => {
     const courseId = docSnap.id;
+    const course = docSnap.data();
     if (!favoriteIds.has(courseId)) return;
-    matches.push({ id: courseId, course: docSnap.data() });
+
+    if (searchTerm) {
+      const term = searchTerm.trim().toLowerCase();
+      const code = String(course.code || "").toLowerCase();
+      const title = String(course.title || "").toLowerCase();
+      if (!code.includes(term) && !title.includes(term)) return;
+    }
+
+    matches.push({ id: courseId, course });
   });
 
   currentCourseMatches = matches;
@@ -1417,38 +1444,36 @@ async function loadFavoriteCourses() {
     const modal = document.getElementById("courseModal");
     const content = document.getElementById("modalContent");
 
-    let html = `<h2 style="margin-top:0;">${course.code} — ${course.title}</h2><p style="color:#6b7280;">${course.level} · ${course.credit}</p>`;
+    let html = `<h2 style="margin-top:0;">${escapeHTML(course.code)} — ${escapeHTML(course.title)}</h2>`;
+    html += `<p style="color:#6b7280;">${escapeHTML(course.level)} · ${escapeHTML(course.credit)}</p>`;
 
-    if (course.description) {
-      html += `<p>${course.description}</p>`;
-    }
-
+    if (course.description) html += `<p>${escapeHTML(course.description)}</p>`;
     if (course.prerequisites) {
-      html += `<p style="font-size:13px; color:#8a8f98;"><strong>Prerequisites:</strong> ${course.prerequisites}</p>`;
+      html += `<p style="font-size:13px; color:#8a8f98;"><strong>Prerequisites:</strong> ${escapeHTML(course.prerequisites)}</p>`;
     }
 
-    if (course.noteFileUrl) {
-      html += `<p><a href="${course.noteFileUrl}" target="_blank">📄 Download Notes (${course.noteFileName})</a></p>`;
+    if (course.noteFileUrl && isSafeHttpUrl(course.noteFileUrl)) {
+      html += `<p><a href="${escapeHTML(course.noteFileUrl)}" target="_blank" rel="noopener noreferrer">📄 Download Notes (${escapeHTML(course.noteFileName || "file")})</a></p>`;
     }
 
-    if (course.notes && course.notes.length > 0) {
+    if (Array.isArray(course.notes) && course.notes.length > 0) {
       html += `<h4>Notes</h4>`;
       course.notes.forEach((note) => {
-        if (note.heading || (note.body && note.body[0])) {
-          html += `<p><strong>${note.heading || ""}</strong><br>${(note.body && note.body[0]) || ""}</p>`;
+        if (note && (note.heading || (Array.isArray(note.body) && note.body[0]))) {
+          html += `<p><strong>${escapeHTML(note.heading || "")}</strong><br>${escapeHTML((Array.isArray(note.body) && note.body[0]) || "")}</p>`;
         }
       });
     }
 
-    if (course.qaFileUrl) {
-      html += `<p><a href="${course.qaFileUrl}" target="_blank">📄 Download Q&A (${course.qaFileName})</a></p>`;
+    if (course.qaFileUrl && isSafeHttpUrl(course.qaFileUrl)) {
+      html += `<p><a href="${escapeHTML(course.qaFileUrl)}" target="_blank" rel="noopener noreferrer">📄 Download Q&amp;A (${escapeHTML(course.qaFileName || "file")})</a></p>`;
     }
 
-    if (course.qa && course.qa.length > 0) {
-      html += `<h4>Trial Q&A</h4>`;
+    if (Array.isArray(course.qa) && course.qa.length > 0) {
+      html += `<h4>Trial Q&amp;A</h4>`;
       course.qa.forEach((item, i) => {
-        if (item.q || item.a) {
-          html += `<p><strong>Q${i + 1}: ${item.q || ""}</strong><br>${item.a || ""}</p>`;
+        if (item && (item.q || item.a)) {
+          html += `<p><strong>Q${i + 1}: ${escapeHTML(item.q || "")}</strong><br>${escapeHTML(item.a || "")}</p>`;
         }
       });
     }
@@ -1469,7 +1494,12 @@ async function loadFavoriteCourses() {
 
   const searchInput = document.getElementById("searchInput");
   searchInput.addEventListener("input", () => {
-    loadCourses(searchInput.value);
+    const activeView = document.querySelector("#sidebarNav .level-btn.active")?.getAttribute("data-view");
+    if (activeView === "FAVORITES") {
+      loadFavoriteCourses(searchInput.value);
+    } else {
+      loadCourses(searchInput.value);
+    }
   });
 
     let selectedDepartment = null;
@@ -1537,19 +1567,24 @@ async function loadFavoriteCourses() {
       authError.style.color = "#c0392b";
      authError.innerHTML = `Please verify your email before logging in. <a href="#" id="resendVerifyLink" style="color:#0d9488;">Resend verification email</a>`;
       const unverifiedUser = user;
-      await signOut(auth);
+      const resendLink = document.getElementById("resendVerifyLink");
 
-      document.getElementById("resendVerifyLink").addEventListener("click", async (e) => {
+      resendLink.addEventListener("click", async (e) => {
         e.preventDefault();
+        resendLink.style.pointerEvents = "none";
         try {
           await sendEmailVerification(unverifiedUser);
           authError.style.color = "#2e7d5b";
           authError.textContent = "Verification email resent — check your inbox.";
         } catch (error) {
           authError.style.color = "#c0392b";
-          authError.textContent = "Couldn't resend — please try logging in again in a minute.";
+          authError.textContent = "Couldn't resend the verification email. Please try again shortly.";
+        } finally {
+          resendLink.style.pointerEvents = "";
+          await signOut(auth);
         }
       });
+
       return;
     }
 
@@ -1564,6 +1599,7 @@ async function loadFavoriteCourses() {
         return;
       }
 
+      document.getElementById("onboardingScreen").style.display = "none";
       appContent.style.display = "block";
       document.getElementById("welcomeMsg").textContent = `Hello, ${namePart}`;
       await loadUserFavorites(user.uid);
@@ -1571,6 +1607,8 @@ async function loadFavoriteCourses() {
     } else {
       authBox.style.display = "block";
       appContent.style.display = "none";
+      document.getElementById("onboardingScreen").style.display = "none";
+      authError.style.color = "#c0392b";
     }
   });
 </script>
