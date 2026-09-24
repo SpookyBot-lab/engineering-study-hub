@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Engineering Study Hub</title>
+  <style>
+:root {
+  --bg-main: #f6f3ec;
+  --card-bg: #ffffff;
+  --border-color: #eae5d8;
+  --border-strong: #d8d2c2;
+  --text-primary: #1f2937;
+  --text-muted: #8a8f98;
+  --input-bg: #ffffff;
+  --accent: #0d9488;
+  --accent-solid: #0f766e;
+}
+
+[data-theme="dark"] {
+  --bg-main: #14161c;
+  --card-bg: #1f222b;
+  --border-color: #2c2f3a;
+  --border-strong: #383c4a;
+  --text-primary: #e5e7eb;
+  --text-muted: #9aa0ad;
+  --input-bg: #262a35;
+  --accent: #2dd4bf;
+}
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: "Nunito", -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-primary);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  #loginBox {
+    max-width: 360px;
+    margin: 80px auto;
+    background: var(--card-bg);
+    padding: 32px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 30px rgba(18,35,61,0.1);
+  }
+
+  #loginBox h2 { margin-top: 0; color: #12233d; }
+
+  #loginBox input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+  }
+
+  #loginBtn {
+    width: 100%;
+    padding: 10px;
+    background: #12233d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  #errorMsg { color: #c0392b; font-size: 13px; margin-top: 8px; }
+
+  #adminPanel { display: none; }
+
+  .appLayout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 230px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #12233d 0%, #16294a 100%);
+    color: #f2efe6;
+    padding: 28px 0 20px;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .sidebar-title { padding: 0 22px 22px; border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 14px; }
+  .sidebar-title h1 { font-size: 17px; margin: 0 0 3px; }
+  .sidebar-title p { margin: 0; font-size: 12.5px; color: #b9c3d4; }
+
+  #sidebarNav { display: flex; flex-direction: column; gap: 2px; padding: 0 12px; }
+
+  .nav-btn {
+    text-align: left;
+    background: none;
+    border: none;
+    color: #dfe6ef;
+    font-size: 14px;
+    padding: 11px 14px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-family: inherit;
+  }
+
+  .nav-btn:hover { background: rgba(255,255,255,0.08); }
+  .nav-btn.active { background: rgba(255,255,255,0.12); color: #fff; font-weight: 600; }
+
+  #adminLogoutBtn {
+    margin: 10px 22px 0;
+    background: rgba(255,255,255,0.1);
+    color: #f2efe6;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 9px 0;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .mainArea { flex: 1; min-width: 0; padding: 32px 40px 60px; max-width: 800px; }
+
+  .viewTitle { color: #12233d; margin-top: 0; }
+
+  .statsRow { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+
+  .statCard {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 16px 22px;
+    box-shadow: 0 4px 12px rgba(18,35,61,0.06);
+    min-width: 150px;
+  }
+
+  .deptBoxGrid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.deptBox {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(18,35,61,0.06);
+  flex: 1;
+  min-width: 220px;
+}
+
+.deptBoxHeader {
+  color: white;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.deptBoxBody {
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.deptLevelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13.5px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.deptLevelRow:last-child { border-bottom: none; }
+.deptLevelRow .levelName { color: var(--text-muted); }
+
+.deptLevelRow .levelCount {
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--bg-main);
+  padding: 2px 10px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+  .statCard .statNum { font-size: 24px; font-weight: 700; color: #12233d; }
+  .statCard .statLabel { font-size: 12.5px; color: #8a8f98; }
+
+  #courseForm input, #courseForm select, #courseForm textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--input-bg);
+    color: var(--text-primary);
+  }
+
+  #courseForm label { font-size: 13px; color: #6b7280; display: block; margin-bottom: 6px; }
+  #courseForm h4 { color: #12233d; margin: 18px 0 8px; }
+
+  .secondaryBtn {
+    background: white;
+    border: 1px solid #d8d2c2;
+    color: #12233d;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-bottom: 14px;
+  }
+
+  .noteSection, .qaItem {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: var(--card-bg);
+  }
+
+  #submitBtn {
+    background: #12233d;
+    color: white;
+    border: none;
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 6px;
+  }
+
+  #saveMsg { font-size: 13.5px; margin-top: 10px; color: #12233d; }
+
+  .courseRow {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px 20px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(18,35,61,0.05);
+  }
+
+  .courseRow .editBtn, .courseRow .deleteBtn {
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-left: 6px;
+  }
+
+  .courseRow .editBtn { background: #12233d; color: white; }
+  .courseRow .deleteBtn { background: #c0392b; color: white; }
+
+  @media (max-width: 720px) {
+    .appLayout { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; padding: 14px 16px; overflow-x: auto; }
+    .sidebar-title, #adminLogoutBtn { display: none; }
+    #sidebarNav { flex-direction: row; padding: 0; }
+    .mainArea { padding: 22px 18px 50px; }
+  }
+
+    .welcomeBanner {
+    background: linear-gradient(135deg, #12233d 0%, #1c3a63 100%);
+    border-radius: 16px;
+    padding: 26px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 24px rgba(18, 35, 61, 0.18);
+  }
+
+  .bannerSub {
+    color: #b9c3d4;
+    font-size: 13px;
+    margin: 0;
+  }
+
+  .bannerIllustration {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+    .viewTitle, #courseForm h4 {
+    color: var(--text-primary);
+  }
+
+  #courseForm label {
+    color: var(--text-muted);
+  }
+
+  .statCard .statNum { color: var(--text-primary); }
+  .statCard .statLabel { color: var(--text-muted); }
+
+  .courseRow span { color: var(--text-primary); }
+
+  #saveMsg { color: var(--text-primary); }
+
+  #courseForm input::placeholder,
+  #courseForm textarea::placeholder {
+    color: var(--text-muted);
+  }
+
+    .sidebarLogo {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .tabBtn {
+    border: 1px solid var(--border-strong);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .tabBtn:hover { border-color: var(--accent); }
+  .tabBtn.active { background: #12233d; color: white; border-color: #12233d; }
+
+  .viewMoreToggleBtn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 8px 12px;
+    margin-top: 4px;
+    background: none;
+    border: 1px dashed var(--border-strong);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--accent);
+    font-family: inherit;
+  }
+</style>
+</head>
+<body>
+
+  <div id="loginBox">
+    <h2>Admin Login</h2>
+    <input type="email" id="emailInput" placeholder="Email">
+    <input type="password" id="passwordInput" placeholder="Password">
+    <button id="loginBtn">Log In</button>
+    <p id="errorMsg"></p>
+  </div>
+
+  <div id="adminPanel">
+    <div class="appLayout">
+
+      <aside class="sidebar">
+      <div class="sidebar-title">
+        <img src="logo.png" alt="Engineering Study Hub" class="sidebarLogo">
+      </div>
+          <nav id="sidebarNav">
+          <button data-view="overview" class="nav-btn active">Overview</button>
+          <button data-view="add" class="nav-btn">Add Course</button>
+          <button data-view="courses" class="nav-btn">Existing Courses</button>
+          <button data-view="announcements" class="nav-btn">Announcements</button>
+          <button data-view="feedback" class="nav-btn">Feedback</button>
+          <button data-view="donations" class="nav-btn">Donations <span id="donationBadge" style="display:none; background:#c0392b; color:white; font-size:11px; padding:1px 7px; border-radius:10px; margin-left:4px;"></span></button>
+        </nav>
+<button id="themeToggleBtn" style="margin:auto 22px 0; background:rgba(255,255,255,0.1); color:#f2efe6; border:1px solid rgba(255,255,255,0.25); padding:8px 0; border-radius:8px; font-size:13px; cursor:pointer;">🌙 Dark Mode</button>
+<button id="adminLogoutBtn">Log Out</button>
+      </aside>
+
+      <div class="mainArea">
+
+        <div id="overviewView" class="viewPanel">
+          <div class="welcomeBanner">
+            <div>
+              <h2 class="viewTitle" style="color:white; margin:0 0 4px;">Admin overview</h2>
+              <p class="bannerSub">Manage courses, announcements, and student messages.</p>
+            </div>
+              <div class="bannerIllustration">
+                <svg width="90" height="70" viewBox="0 0 90 70" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="15" y="35" width="55" height="10" rx="2" fill="#c8712f"/>
+                  <rect x="10" y="25" width="60" height="10" rx="2" fill="#e8a33d"/>
+                  <rect x="18" y="15" width="50" height="10" rx="2" fill="#f2efe6"/>
+                  <circle cx="72" cy="18" r="12" fill="#4a90a4" opacity="0.9"/>
+                  <path d="M62 18 L82 18 M72 8 L72 28" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+            </div>
+<div class="statsRow" id="statsRow"></div>
+<div class="deptBoxGrid" id="deptBoxGrid"></div>
+        </div>
+
+        <div id="addView" class="viewPanel" style="display:none;">
+          <h2 class="viewTitle" id="formTitle">Add a Course</h2>
+          <form id="courseForm">
+            <input type="text" id="courseCode" placeholder="Course code (e.g. MTH101)" required>
+            <input type="text" id="courseTitle" placeholder="Course title" required>
+    <select id="courseDepartment" required>
+      <option value="">Select department</option>
+      <option value="Computer Engineering">Computer Engineering</option>
+      <option value="Mechanical Engineering">Mechanical Engineering</option>
+      <option value="Electrical Engineering">Electrical Engineering</option>
+    </select>
+    <select id="courseLevel" required>
+      <option value="">Select level</option>
+      <option value="100L">100L</option>
+      <option value="200L">200L</option>
+      <option value="300L">300L</option>
+      <option value="400L">400L</option>
+    </select>
+    <select id="courseSession" required>
+      <option value="">Select academic session</option>
+    </select>
+            <input type="text" id="courseCredit" placeholder="Credit units (e.g. 3 units)">
+            <textarea id="courseDescription" placeholder="Short course description (optional)" rows="2"></textarea>
+            <input type="text" id="coursePrereq" placeholder="Prerequisites (e.g. MTH101) — optional">
+
+            <h4>Notes Sections</h4>
+            <div id="notesContainer"></div>
+            <button type="button" id="addNoteBtn" class="secondaryBtn">+ Add another note section</button>
+            <label>Or upload a full notes document (PDF/Word):</label>
+            <input type="file" id="noteFile" accept=".pdf,.doc,.docx">
+
+            <h4>Q&A</h4>
+            <div id="qaContainer"></div>
+            <button type="button" id="addQaBtn" class="secondaryBtn">+ Add another question</button>
+            <label>Or upload a Q&A document (PDF/Word):</label>
+            <input type="file" id="qaFile" accept=".pdf,.doc,.docx">
+
+                        <button type="submit" id="submitBtn">Save Course</button>
+            <button type="button" id="cancelEditBtn" class="secondaryBtn" style="display:none; margin-left:8px;">Cancel</button>
+          </form>
+          <p id="saveMsg"></p>
+        </div>
+
+        <div id="coursesView" class="viewPanel" style="display:none;">
+          <h2 class="viewTitle">Existing Courses</h2>
+          <div id="courseDeptTabs" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>
+          <div id="courseLevelTabs" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;"></div>
+          <div id="adminCourseList"></div>
+        </div>
+
+        <div id="feedbackView" class="viewPanel" style="display:none;">
+          <h2 class="viewTitle">Student Feedback & Requests</h2>
+          <div style="display:flex; gap:20px;">
+            <div id="feedbackStudentList" style="width:220px; flex-shrink:0;"></div>
+            <div style="flex:1;">
+              <div id="adminFeedbackThread" style="max-height:400px; overflow-y:auto; overflow-x:hidden; margin-bottom:10px; border:1px solid #eae5d8; border-radius:8px; padding:12px; min-height:200px; display:flex; flex-direction:column; scroll-behavior:smooth;"></div>
+              <input type="text" id="adminReplyInput" placeholder="Type a reply..." style="width:70%; padding:9px; border:1px solid #d8d2c2; border-radius:6px;">
+              <button id="sendReplyBtn" style="padding:9px 18px; background:#12233d; color:white; border:none; border-radius:6px; cursor:pointer;">Reply</button>
+            </div>
+          </div>
+        </div>
+        <div id="donationsView" class="viewPanel" style="display:none;">
+          <h2 class="viewTitle">Donations</h2>
+
+          <h4 style="color:var(--text-primary);">Your Bank Details (shown to students)</h4>
+          <input type="text" id="bankNameInput" placeholder="Bank name">
+          <input type="text" id="accountNumberInput" placeholder="Account number">
+          <input type="text" id="accountNameInput" placeholder="Account name">
+          <button id="saveBankDetailsBtn" style="background:#12233d; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; margin:8px 0 24px;">Save Bank Details</button>
+          <p id="bankDetailsMsg" style="font-size:13px;"></p>
+
+          <hr style="margin:24px 0;">
+          <h4 style="color:var(--text-primary);">Received Donations</h4>
+          <div id="donationsList"></div>
+        </div>
+
+        <div id="announcementsView" class="viewPanel" style="display:none;">
+        <h2 class="viewTitle">Announcements</h2>
+        <textarea id="announcementInput" placeholder="Write a short announcement for students..." rows="3" style="width:100%; padding:10px; border:1px solid #d8d2c2; border-radius:8px; font-family:inherit; margin-bottom:10px;"></textarea>
+        <button id="postAnnouncementBtn" style="background:#12233d; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer;">Post</button>
+        <hr style="margin:24px 0;">
+        <div id="adminAnnouncementsList"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <footer id="appFooter" style="text-align:center; padding:16px 20px 24px; color:var(--text-muted); font-size:12px; border-top:1px solid var(--border-color); margin-top:10px;">
+    © <span id="footerYear"></span> Engineering Study Hub. All rights reserved.
+  </footer>
+
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, setDoc, getDoc, where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBkavWHN37Qu-4UphxFDihacSJJfbjD9Io",
+    authDomain: "engineering-study-hub-b9d53.firebaseapp.com",
+    projectId: "engineering-study-hub-b9d53",
+    storageBucket: "engineering-study-hub-b9d53.firebasestorage.app",
+    messagingSenderId: "802340224421",
+    appId: "1:802340224421:web:542f3c584caec159a87c4c"
+  };
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+document.getElementById("footerYear").textContent = new Date().getFullYear();
+  let editingCourseId = null;
+  let editingCourseData = null; // holds the full existing course data while editing
+      const navButtons = document.querySelectorAll(".nav-btn");
+  const views = {
+    overview: document.getElementById("overviewView"),
+    add: document.getElementById("addView"),
+    courses: document.getElementById("coursesView"),
+    announcements: document.getElementById("announcementsView"),
+    feedback: document.getElementById("feedbackView"),
+    donations: document.getElementById("donationsView")
+  };
+
+    const themeToggleBtn = document.getElementById("themeToggleBtn");
+
+  function applyTheme(theme) {
+    if (theme === "dark") {
+      document.documentElement.setAttribute("data-theme", "dark");
+      themeToggleBtn.textContent = "☀️ Light Mode";
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+      themeToggleBtn.textContent = "🌙 Dark Mode";
+    }
+  }
+
+  const savedTheme = localStorage.getItem("studyHubAdminTheme") || "light";
+  applyTheme(savedTheme);
+
+  themeToggleBtn.addEventListener("click", () => {
+    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+    const newTheme = isDark ? "light" : "dark";
+    applyTheme(newTheme);
+    localStorage.setItem("studyHubAdminTheme", newTheme);
+  });
+
+  function switchView(viewName) {
+    navButtons.forEach((b) => b.classList.remove("active"));
+    document.querySelector(`.nav-btn[data-view="${viewName}"]`).classList.add("active");
+    Object.keys(views).forEach((key) => {
+      views[key].style.display = key === viewName ? "block" : "none";
+    });
+  if (viewName === "courses") { renderCourseDeptTabs(); renderCourseLevelTabs(); loadAdminCourseList(); }
+  if (viewName === "overview") loadOverviewStats();
+  if (viewName === "announcements") loadAdminAnnouncements();
+  if (viewName === "feedback") loadFeedbackStudentList();
+  if (viewName === "donations") { loadBankDetails(); loadDonationsList(); }
+}
+
+  navButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      switchView(btn.getAttribute("data-view"));
+    });
+  });
+
+    document.getElementById("postAnnouncementBtn").addEventListener("click", async () => {
+    const input = document.getElementById("announcementInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    await addDoc(collection(db, "announcements"), { text: text, createdAt: Date.now() });
+    input.value = "";
+    loadAdminAnnouncements();
+  });
+
+  async function loadAdminAnnouncements() {
+    const container = document.getElementById("adminAnnouncementsList");
+    const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      container.innerHTML = "<p>No announcements posted yet.</p>";
+      return;
+    }
+
+    container.innerHTML = "";
+    querySnapshot.forEach((docSnap) => {
+      const a = docSnap.data();
+      const div = document.createElement("div");
+      div.className = "courseRow";
+      div.innerHTML = `
+        <span>${a.text}</span>
+        <button data-id="${docSnap.id}" class="deleteAnnouncementBtn deleteBtn">Delete</button>
+      `;
+      container.appendChild(div);
+    });
+
+    document.querySelectorAll(".deleteAnnouncementBtn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        await deleteDoc(doc(db, "announcements", btn.getAttribute("data-id")));
+        loadAdminAnnouncements();
+      });
+    });
+  }
+
+    let selectedStudentId = null;
+    const FEEDBACK_PAGE_SIZE =10
+    let feedbackStudentEntries = [];
+    let feedbackListExpanded = false;
+
+  function getLatestTimestamp(data) {
+    const messages = data.messages || [];
+    if (messages.length === 0) return 0;
+    return messages[messages.length - 1].timestamp || 0;
+  }
+    
+  async function loadFeedbackStudentList() {
+    const container = document.getElementById("feedbackStudentList");
+    const querySnapshot = await getDocs(collection(db, "feedback"));
+
+    if (querySnapshot.empty) {
+      container.innerHTML = "<p style='font-size:13px; color:#8a8f98;'>No messages yet.</p>";
+      feedbackStudentEntries = [];
+      return;
+    }
+
+    feedbackStudentEntries = [];
+    querySnapshot.forEach((docSnap) => {
+      feedbackStudentEntries.push({ id: docSnap.id, data: docSnap.data() });
+    });
+
+    // Newest conversation first, based on each student's most recent message
+    feedbackStudentEntries.sort((a, b) => getLatestTimestamp(b.data) - getLatestTimestamp(a.data));
+
+    feedbackListExpanded = false;
+    renderFeedbackStudentList();
+  }
+
+  function renderFeedbackStudentList() {
+    const container = document.getElementById("feedbackStudentList");
+    container.innerHTML = "";
+
+    const visibleEntries = feedbackListExpanded
+      ? feedbackStudentEntries
+      : feedbackStudentEntries.slice(0, FEEDBACK_PAGE_SIZE);
+
+    visibleEntries.forEach(({ id, data }) => {
+      const btn = document.createElement("button");
+      btn.textContent = data.studentEmail || "Unknown student";
+      const isSelected = id === selectedStudentId;
+      btn.style.cssText = `display:block; width:100%; text-align:left; padding:10px 12px; margin-bottom:6px; background:${isSelected ? "#eeeadf" : "white"}; border:1px solid #eae5d8; border-radius:8px; cursor:pointer; font-size:13px;`;
+      btn.addEventListener("click", () => {
+        selectedStudentId = id;
+        renderFeedbackStudentList();
+        loadAdminFeedbackThread();
+      });
+      container.appendChild(btn);
+    });
+
+    if (feedbackStudentEntries.length > FEEDBACK_PAGE_SIZE) {
+      const toggleBtn = document.createElement("button");
+      const hiddenCount = feedbackStudentEntries.length - FEEDBACK_PAGE_SIZE;
+      toggleBtn.textContent = feedbackListExpanded ? "Show less" : `View ${hiddenCount} more`;
+      toggleBtn.className = "viewMoreToggleBtn";
+      toggleBtn.addEventListener("click", () => {
+        feedbackListExpanded = !feedbackListExpanded;
+        renderFeedbackStudentList();
+      });
+      container.appendChild(toggleBtn);
+    }
+  }
+
+function formatFeedbackTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    const timeStr = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+
+    if (isToday) return timeStr;
+
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    if (date.toDateString() === yesterday.toDateString()) return `Yesterday, ${timeStr}`;
+
+    const dateStr = date.toLocaleDateString([], { month: "short", day: "numeric" });
+    return `${dateStr}, ${timeStr}`;
+  }
+
+  async function loadAdminFeedbackThread() {
+    const container = document.getElementById("adminFeedbackThread");
+    if (!selectedStudentId) {
+      container.innerHTML = "<p style='color:#8a8f98; font-size:13px;'>Select a student to view their messages.</p>";
+      return;
+    }
+
+    const docRef = doc(db, "feedback", selectedStudentId);
+    const docSnap = await getDoc(docRef);
+    const messages = docSnap.exists() ? docSnap.data().messages || [] : [];
+
+    container.innerHTML = "";
+    messages.forEach((m) => {
+      const wrapper = document.createElement("div");
+      const isAdmin = m.from === "admin";
+      wrapper.style.cssText = `display:flex; flex-direction:column; margin-bottom:8px; max-width:75%; ${isAdmin ? "margin-left:auto; align-items:flex-end;" : "margin-right:auto; align-items:flex-start;"}`;
+
+      const bubble = document.createElement("div");
+      bubble.style.cssText = `font-size:13px; padding:8px 12px; border-radius:8px; word-wrap:break-word; overflow-wrap:break-word; ${isAdmin ? "background:#12233d; color:white;" : "background:#eeeadf; color:#1f2937;"}`;
+      bubble.textContent = m.text;
+      wrapper.appendChild(bubble);
+
+      if (m.timestamp) {
+        const time = document.createElement("span");
+        time.textContent = formatFeedbackTimestamp(m.timestamp);
+        time.style.cssText = "font-size:10.5px; color:#8a8f98; margin-top:3px; padding:0 2px;";
+        wrapper.appendChild(time);
+      }
+
+      container.appendChild(wrapper);
+    });
+    container.scrollTop = container.scrollHeight;
+  }
+
+  document.getElementById("sendReplyBtn").addEventListener("click", async () => {
+    if (!selectedStudentId) {
+      alert("Select a student first.");
+      return;
+    }
+    const input = document.getElementById("adminReplyInput");
+    const text = input.value.trim();
+    if (!text) return;
+
+    const docRef = doc(db, "feedback", selectedStudentId);
+    const docSnap = await getDoc(docRef);
+    let messages = docSnap.exists() ? docSnap.data().messages || [] : [];
+    let studentEmail = docSnap.exists() ? docSnap.data().studentEmail : "";
+
+    messages.push({ from: "admin", text: text, timestamp: Date.now() });
+    await setDoc(docRef, { messages: messages, studentEmail: studentEmail });
+
+    input.value = "";
+    loadAdminFeedbackThread();
+  });
+
+async function loadOverviewStats() {
+  const querySnapshot = await getDocs(collection(db, "courses"));
+  const total = querySnapshot.size;
+
+  const departments = ["Computer Engineering", "Mechanical Engineering", "Electrical Engineering"];
+  const levels = ["100L", "200L", "300L", "400L"];
+  const deptColors = {
+    "Computer Engineering": "#4a90a4",
+    "Mechanical Engineering": "#c8712f",
+    "Electrical Engineering": "#2e7d5b"
+  };
+
+  // Build an empty { dept: { level: count } } structure
+  const byDept = {};
+  departments.forEach((dept) => {
+    byDept[dept] = { "100L": 0, "200L": 0, "300L": 0, "400L": 0 };
+  });
+
+  querySnapshot.forEach((docSnap) => {
+    const course = docSnap.data();
+    if (byDept[course.department] && byDept[course.department][course.level] !== undefined) {
+      byDept[course.department][course.level]++;
+    }
+  });
+
+  // Overall total stays up top
+  document.getElementById("statsRow").innerHTML = `
+    <div class="statCard"><div class="statNum">${total}</div><div class="statLabel">Total Courses</div></div>
+  `;
+
+  // One tab box per department, levels listed beneath
+  document.getElementById("deptBoxGrid").innerHTML = departments.map((dept) => {
+    const levelRows = levels.map((lvl) => `
+      <div class="deptLevelRow">
+        <span class="levelName">${lvl}</span>
+        <span class="levelCount">${byDept[dept][lvl]}</span>
+      </div>
+    `).join("");
+
+    const deptTotal = levels.reduce((sum, lvl) => sum + byDept[dept][lvl], 0);
+
+    return `
+      <div class="deptBox">
+        <div class="deptBoxHeader" style="background:${deptColors[dept]};">
+          ${dept} <span style="opacity:0.85; font-weight:400;">(${deptTotal})</span>
+        </div>
+        <div class="deptBoxBody">
+          ${levelRows}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+  const CLOUDINARY_CLOUD_NAME = "vfnj6izy";
+  const CLOUDINARY_UPLOAD_PRESET = "study_hub_uploads";
+
+  async function uploadToCloudinary(file) {
+  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+  const response = await fetch(url, {
+    method: "POST",
+    body: formData
+  });
+
+  if (!response.ok) {
+    throw new Error("Cloudinary upload failed: " + response.statusText);
+  }
+
+  const data = await response.json();
+  return data.secure_url;
+}
+
+let noteSectionCount = 0;
+let qaItemCount = 0;
+
+function addNoteSection(heading = "", body = "") {
+  noteSectionCount++;
+  const id = noteSectionCount;
+  const div = document.createElement("div");
+  div.className = "noteSection";
+  div.dataset.id = id;
+  div.style.cssText = "border:1px solid #d8d2c2; border-radius:6px; padding:10px; margin-bottom:8px;";
+  div.innerHTML = `
+    <input type="text" class="noteHeadingInput" placeholder="Note heading" value="${heading}" style="width:100%; margin-bottom:6px;">
+    <textarea class="noteBodyInput" placeholder="Note content" rows="3" style="width:100%;">${body}</textarea>
+    <button type="button" class="removeNoteBtn" style="margin-top:6px; background:#c0392b; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">Remove</button>
+  `;
+  div.querySelector(".removeNoteBtn").addEventListener("click", () => div.remove());
+  document.getElementById("notesContainer").appendChild(div);
+}
+
+function addQaItem(question = "", answer = "") {
+  qaItemCount++;
+  const id = qaItemCount;
+  const div = document.createElement("div");
+  div.className = "qaItem";
+  div.dataset.id = id;
+  div.style.cssText = "border:1px solid #d8d2c2; border-radius:6px; padding:10px; margin-bottom:8px;";
+  div.innerHTML = `
+    <input type="text" class="qaQuestionInput" placeholder="Question" value="${question}" style="width:100%; margin-bottom:6px;">
+    <textarea class="qaAnswerInput" placeholder="Answer" rows="2" style="width:100%;">${answer}</textarea>
+    <button type="button" class="removeQaBtn" style="margin-top:6px; background:#c0392b; color:white; border:none; padding:4px 10px; border-radius:4px; cursor:pointer;">Remove</button>
+  `;
+  div.querySelector(".removeQaBtn").addEventListener("click", () => div.remove());
+  document.getElementById("qaContainer").appendChild(div);
+}
+
+document.getElementById("addNoteBtn").addEventListener("click", () => addNoteSection());
+document.getElementById("addQaBtn").addEventListener("click", () => addQaItem());
+
+addNoteSection();
+addQaItem();
+
+
+const COURSE_DEPARTMENTS = ["Computer Engineering", "Mechanical Engineering", "Electrical Engineering"];
+const COURSE_LEVELS = ["100L", "200L", "300L", "400L"];
+let selectedCourseDept = COURSE_DEPARTMENTS[0];
+let selectedCourseLevel = COURSE_LEVELS[0];
+
+function renderCourseDeptTabs() {
+  const container = document.getElementById("courseDeptTabs");
+  container.innerHTML = "";
+  COURSE_DEPARTMENTS.forEach((dept) => {
+    const btn = document.createElement("button");
+    btn.className = "tabBtn" + (dept === selectedCourseDept ? " active" : "");
+    btn.textContent = dept;
+    btn.addEventListener("click", () => {
+      selectedCourseDept = dept;
+      renderCourseDeptTabs();
+      loadAdminCourseList();
+    });
+    container.appendChild(btn);
+  });
+}
+
+function renderCourseLevelTabs() {
+  const container = document.getElementById("courseLevelTabs");
+  container.innerHTML = "";
+  COURSE_LEVELS.forEach((lvl) => {
+    const btn = document.createElement("button");
+    btn.className = "tabBtn" + (lvl === selectedCourseLevel ? " active" : "");
+    btn.textContent = lvl;
+    btn.addEventListener("click", () => {
+      selectedCourseLevel = lvl;
+      renderCourseLevelTabs();
+      loadAdminCourseList();
+    });
+    container.appendChild(btn);
+  });
+}
+
+async function loadAdminCourseList() {
+  const adminCourseList = document.getElementById("adminCourseList");
+  adminCourseList.innerHTML = "Loading...";
+
+  const q = query(
+    collection(db, "courses"),
+    where("department", "==", selectedCourseDept),
+    where("level", "==", selectedCourseLevel)
+  );
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    adminCourseList.innerHTML = `<p>No courses added for ${selectedCourseDept} · ${selectedCourseLevel} yet.</p>`;
+    return;
+  }
+
+  adminCourseList.innerHTML = "";
+
+  querySnapshot.forEach((docSnap) => {
+    const course = docSnap.data();
+    const courseId = docSnap.id;
+
+ const levelColors = { "100L": "#4a90a4", "200L": "#7d5ba6", "300L": "#c8712f", "400L": "#2e7d5b" };
+const div = document.createElement("div");
+div.style.cssText = `border:1px solid #d8d2c2; border-left:4px solid ${levelColors[course.level] || "#0d9488"}; border-radius:6px; padding:10px 14px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;`;
+
+    div.innerHTML = `
+      <span><strong>${course.code}</strong> — ${course.title} (${course.level})</span>
+      <span>
+        <button data-id="${courseId}" class="editBtn" style="background:#12233d; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer; margin-right:6px;">Edit</button>
+        <button data-id="${courseId}" class="deleteBtn" style="background:#c0392b; color:white; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">Delete</button>
+      </span>
+    `;
+
+    adminCourseList.appendChild(div);
+  });
+
+  // Delete button handlers
+  document.querySelectorAll(".deleteBtn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const courseId = btn.getAttribute("data-id");
+      const confirmDelete = confirm("Are you sure you want to delete this course? This can't be undone.");
+      if (!confirmDelete) return;
+
+      await deleteDoc(doc(db, "courses", courseId));
+      loadAdminCourseList();
+    });
+  });
+
+  // Edit button handlers
+  document.querySelectorAll(".editBtn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const courseId = btn.getAttribute("data-id");
+
+      const courseDocs = await getDocs(collection(db, "courses"));
+      let courseData = null;
+      courseDocs.forEach((docSnap) => {
+        if (docSnap.id === courseId) {
+          courseData = docSnap.data();
+        }
+      });
+
+      if (!courseData) return;
+      editingCourseData = courseData; // remember the full existing record
+
+      document.getElementById("courseCode").value = courseData.code || "";
+      document.getElementById("courseTitle").value = courseData.title || "";
+      document.getElementById("courseDepartment").value = courseData.department || "Computer Engineering";
+      document.getElementById("courseLevel").value = courseData.level || "";
+      document.getElementById("courseSession").value = courseData.academicSession || "";
+      document.getElementById("courseCredit").value = courseData.credit || "";
+      document.getElementById("courseDescription").value = courseData.description || "";
+      document.getElementById("coursePrereq").value = courseData.prerequisites || "";
+
+      // Clear existing sections, then rebuild one per saved note/question
+      document.getElementById("notesContainer").innerHTML = "";
+      document.getElementById("qaContainer").innerHTML = "";
+
+      if (courseData.notes && courseData.notes.length > 0) {
+        courseData.notes.forEach((note) => {
+          addNoteSection(note.heading || "", note.body ? note.body[0] : "");
+        });
+      } else {
+        addNoteSection(); // at least one empty section if none exist
+      }
+
+      if (courseData.qa && courseData.qa.length > 0) {
+        courseData.qa.forEach((item) => {
+          addQaItem(item.q || "", item.a || "");
+        });
+      } else {
+        addQaItem();
+      }
+
+      editingCourseId = courseId;
+      document.getElementById("formTitle").textContent = "Edit Course";
+      document.querySelector("#courseForm button[type=submit]").textContent = "Update Course";
+      document.getElementById("cancelEditBtn").style.display = "inline-block";
+      switchView("add");
+    });
+  });
+}
+
+function populateSessionOptions() {
+  const select = document.getElementById("courseSession");
+  const now = new Date();
+  // Academic sessions typically start around September — before that,
+  // we're still in the previous session.
+  const baseYear = now.getMonth() >= 8 ? now.getFullYear() : now.getFullYear() - 1;
+
+  // One session ahead (for pre-loading next year's content) down to
+  // four sessions back (for older archived content).
+  for (let y = baseYear + 1; y >= baseYear - 4; y--) {
+    const option = document.createElement("option");
+    option.value = `${y}/${y + 1}`;
+    option.textContent = `${y}/${y + 1}`;
+    select.appendChild(option);
+  }
+}
+
+populateSessionOptions();
+  async function updateDonationBadge() {
+    const q = query(collection(db, "donations"), where("read", "==", false));
+    const querySnapshot = await getDocs(q);
+    const badge = document.getElementById("donationBadge");
+    if (querySnapshot.size > 0) {
+      badge.textContent = querySnapshot.size;
+      badge.style.display = "inline-block";
+    } else {
+      badge.style.display = "none";
+    }
+  }
+
+  const DONATIONS_PAGE_SIZE = 5;
+  let donationEntries = [];
+  let donationsExpanded = false;
+
+  async function loadDonationsList() {
+    const q = query(collection(db, "donations"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+
+    donationEntries = [];
+    querySnapshot.forEach((docSnap) => {
+      donationEntries.push({ id: docSnap.id, data: docSnap.data() });
+    });
+
+    donationsExpanded = false;
+    renderDonationsList();
+
+    // Mark all as read now that admin has opened the tab
+    const unreadIds = donationEntries.filter((e) => !e.data.read).map((e) => e.id);
+    for (const id of unreadIds) {
+      await updateDoc(doc(db, "donations", id), { read: true });
+    }
+    if (unreadIds.length > 0) {
+      donationEntries.forEach((e) => {
+        if (unreadIds.includes(e.id)) e.data.read = true;
+      });
+      renderDonationsList();
+    }
+    updateDonationBadge();
+  }
+
+  function renderDonationsList() {
+    const container = document.getElementById("donationsList");
+
+    if (donationEntries.length === 0) {
+      container.innerHTML = "<p>No donations received yet.</p>";
+      return;
+    }
+
+    const visibleEntries = donationsExpanded
+      ? donationEntries
+      : donationEntries.slice(0, DONATIONS_PAGE_SIZE);
+
+    container.innerHTML = "";
+    visibleEntries.forEach(({ data: d }) => {
+      const div = document.createElement("div");
+      div.className = "courseRow";
+      div.style.flexDirection = "column";
+      div.style.alignItems = "flex-start";
+      const dateStr = new Date(d.createdAt).toLocaleDateString();
+
+      div.innerHTML = `
+        <div style="display:flex; justify-content:space-between; width:100%;">
+          <strong>${d.firstName} ${d.lastName}</strong>
+          <span>₦${d.amount.toFixed(2)}</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text-muted); margin:4px 0;">
+${d.email ? d.email + " · " : ""}${dateStr}${!d.read ? " · <strong style='color:#0d9488;'>New</strong>" : ""}
+        </p>
+<a href="${d.receiptUrl}" target="_blank" style="color:#0d9488; font-size:13px;">View receipt →</a>
+      `;
+      container.appendChild(div);
+    });
+
+    if (donationEntries.length > DONATIONS_PAGE_SIZE) {
+      const toggleBtn = document.createElement("button");
+      const hiddenCount = donationEntries.length - DONATIONS_PAGE_SIZE;
+      toggleBtn.className = "viewMoreToggleBtn";
+      toggleBtn.textContent = donationsExpanded ? "Show less" : `View ${hiddenCount} more`;
+      toggleBtn.addEventListener("click", () => {
+        donationsExpanded = !donationsExpanded;
+        renderDonationsList();
+      });
+      container.appendChild(toggleBtn);
+    }
+  }
+
+  async function loadBankDetails() {
+    const docSnap = await getDoc(doc(db, "settings", "donationInfo"));
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      document.getElementById("bankNameInput").value = data.bankName || "";
+      document.getElementById("accountNumberInput").value = data.accountNumber || "";
+      document.getElementById("accountNameInput").value = data.accountName || "";
+    }
+  }
+
+  document.getElementById("saveBankDetailsBtn").addEventListener("click", async () => {
+    const bankName = document.getElementById("bankNameInput").value.trim();
+    const accountNumber = document.getElementById("accountNumberInput").value.trim();
+    const accountName = document.getElementById("accountNameInput").value.trim();
+    const msg = document.getElementById("bankDetailsMsg");
+
+    if (!bankName || !accountNumber || !accountName) {
+      msg.style.color = "#c0392b";
+      msg.textContent = "Fill in all three fields.";
+      return;
+    }
+
+    await setDoc(doc(db, "settings", "donationInfo"), { bankName, accountNumber, accountName });
+    msg.style.color = "#2e7d5b";
+    msg.textContent = "Bank details saved.";
+  });
+
+  const loginBtn = document.getElementById("loginBtn");
+  const errorMsg = document.getElementById("errorMsg");
+  const loginBox = document.getElementById("loginBox");
+  const adminPanel = document.getElementById("adminPanel");
+
+  loginBtn.addEventListener("click", () => {
+    const email = document.getElementById("emailInput").value;
+    const password = document.getElementById("passwordInput").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .catch((error) => {
+        errorMsg.textContent = "Login failed: " + error.message;
+      });
+  });
+
+    document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+    signOut(auth);
+  });
+
+    document.getElementById("cancelEditBtn").addEventListener("click", () => {
+    editingCourseId = null;
+    editingCourseData = null;
+    courseForm.reset();
+    document.getElementById("notesContainer").innerHTML = "";
+    document.getElementById("qaContainer").innerHTML = "";
+    addNoteSection();
+    addQaItem();
+    document.getElementById("formTitle").textContent = "Add a Course";
+    document.getElementById("submitBtn").textContent = "Save Course";
+    document.getElementById("cancelEditBtn").style.display = "none";
+    switchView("courses");
+  });
+
+const ADMIN_UID = "QlVYFfJMTwT8boiNsxo55YuKPnW2";
+
+onAuthStateChanged(auth, async (user) => {
+  if (user && user.uid !== ADMIN_UID) {
+    errorMsg.textContent = "This account doesn't have admin access.";
+    await signOut(auth);
+    return;
+  }
+
+  if (user) {
+    loginBox.style.display = "none";
+    adminPanel.style.display = "block";
+    loadOverviewStats();
+    updateDonationBadge();
+  } else {
+    loginBox.style.display = "block";
+    adminPanel.style.display = "none";
+  }
+});
+
+  const courseForm = document.getElementById("courseForm");
+  const saveMsg = document.getElementById("saveMsg");
+
+  courseForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    saveMsg.textContent = "Saving...";
+
+    const noteFile = document.getElementById("noteFile").files[0];
+    const qaFile = document.getElementById("qaFile").files[0];
+
+    let noteFileUrl = null;
+    let qaFileUrl = null;
+
+    try {
+           if (noteFile) {
+        noteFileUrl = await uploadToCloudinary(noteFile);
+      } else if (editingCourseId && editingCourseData) {
+        noteFileUrl = editingCourseData.noteFileUrl || null;
+      }
+
+      if (qaFile) {
+        qaFileUrl = await uploadToCloudinary(qaFile);
+      } else if (editingCourseId && editingCourseData) {
+        qaFileUrl = editingCourseData.qaFileUrl || null;
+      }
+
+            // Gather all note sections currently in the form
+      const notesArray = [];
+      document.querySelectorAll("#notesContainer .noteSection").forEach((section) => {
+        const heading = section.querySelector(".noteHeadingInput").value;
+        const body = section.querySelector(".noteBodyInput").value;
+        if (heading || body) {
+          notesArray.push({ heading: heading, body: [body] });
+        }
+      });
+
+      // Gather all Q&A items currently in the form
+      const qaArray = [];
+      document.querySelectorAll("#qaContainer .qaItem").forEach((item) => {
+        const q = item.querySelector(".qaQuestionInput").value;
+        const a = item.querySelector(".qaAnswerInput").value;
+        if (q || a) {
+          qaArray.push({ q: q, a: a });
+        }
+      });
+
+      const newCourse = {
+        code: document.getElementById("courseCode").value,
+        title: document.getElementById("courseTitle").value,
+        department: document.getElementById("courseDepartment").value,
+        level: document.getElementById("courseLevel").value,
+        academicSession: document.getElementById("courseSession").value,
+        credit: document.getElementById("courseCredit").value,
+        description: document.getElementById("courseDescription").value,
+        prerequisites: document.getElementById("coursePrereq").value,
+        notes: notesArray,
+        noteFileUrl: noteFileUrl,
+        noteFileName: noteFile ? noteFile.name : (editingCourseData ? editingCourseData.noteFileName : null),
+        qa: qaArray,
+        qaFileUrl: qaFileUrl,
+        qaFileName: qaFile ? qaFile.name : (editingCourseData ? editingCourseData.qaFileName : null),
+        createdAt: editingCourseId ? (editingCourseData.createdAt || Date.now()) : Date.now()
+      };
+
+            if (editingCourseId) {
+        await updateDoc(doc(db, "courses", editingCourseId), newCourse);
+        saveMsg.textContent = "Course updated successfully!";
+        editingCourseId = null;
+        editingCourseData = null;
+        document.querySelector("#courseForm button[type=submit]").textContent = "Save Course";
+      } else {
+        await addDoc(collection(db, "courses"), newCourse);
+        saveMsg.textContent = "Course saved successfully!";
+      }
+
+            courseForm.reset();
+      document.getElementById("notesContainer").innerHTML = "";
+      document.getElementById("qaContainer").innerHTML = "";
+      addNoteSection();
+      addQaItem();
+      document.getElementById("formTitle").textContent = "Add a Course";
+      document.getElementById("submitBtn").textContent = "Save Course";
+    } catch (error) {
+      saveMsg.textContent = "Error: " + error.message;
+    }
+  });
+</script>
+</body>
+</html>
