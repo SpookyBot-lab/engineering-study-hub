@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Your Email — Engineering Study Hub</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Nunito", -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #f6f3ec;
+    }
+    .card {
+      max-width: 400px;
+      width: 90%;
+      background: #ffffff;
+      padding: 36px 32px;
+      border-radius: 14px;
+      border: 1px solid #eae5d8;
+      box-shadow: 0 10px 30px rgba(18,35,61,0.1);
+      text-align: center;
+    }
+    h2 { color: #12233d; margin-top: 0; }
+    p { color: #5b6472; font-size: 14.5px; line-height: 1.5; }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #12233d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14.5px;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button:disabled { opacity: 0.6; cursor: default; }
+    a.backLink {
+      display: inline-block;
+      margin-top: 18px;
+      color: #0d9488;
+      font-size: 13.5px;
+      text-decoration: none;
+    }
+    #statusIcon { font-size: 40px; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div id="statusIcon">📧</div>
+    <h2 id="heading">Verify your email</h2>
+    <p id="message">Click the button below to confirm this is really you and finish verifying your account.</p>
+    <button id="verifyBtn">Verify My Email</button>
+    <div>
+      <a href="index.html" class="backLink" id="backLink" style="display:none;">Go to Engineering Study Hub →</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getAuth, applyActionCode } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkavWHN37Qu-4UphxFDihacSJJfbjD9Io",
+      authDomain: "engineering-study-hub-b9d53.firebaseapp.com",
+      projectId: "engineering-study-hub-b9d53",
+      storageBucket: "engineering-study-hub-b9d53.firebasestorage.app",
+      messagingSenderId: "802340224421",
+      appId: "1:802340224421:web:542f3c584caec159a87c4c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get("mode");
+    const oobCode = params.get("oobCode");
+
+    const heading = document.getElementById("heading");
+    const message = document.getElementById("message");
+    const verifyBtn = document.getElementById("verifyBtn");
+    const statusIcon = document.getElementById("statusIcon");
+    const backLink = document.getElementById("backLink");
+
+    if (mode !== "verifyEmail" || !oobCode) {
+      statusIcon.textContent = "⚠️";
+      heading.textContent = "Invalid link";
+      message.textContent = "This verification link looks incomplete or broken. Try requesting a new one from the login page.";
+      verifyBtn.style.display = "none";
+    } else {
+      verifyBtn.addEventListener("click", async () => {
+        verifyBtn.disabled = true;
+        verifyBtn.textContent = "Verifying...";
+        try {
+          await applyActionCode(auth, oobCode);
+          statusIcon.textContent = "✅";
+          heading.textContent = "Email verified!";
+          message.textContent = "Your account is confirmed. You can now log in.";
+          verifyBtn.style.display = "none";
+          backLink.style.display = "inline-block";
+        } catch (error) {
+          statusIcon.textContent = "⚠️";
+          heading.textContent = "Couldn't verify";
+          verifyBtn.style.display = "none";
+          if (error.code === "auth/invalid-action-code") {
+            message.textContent = "This link has already been used or has expired. Request a new verification email from the login page and try again.";
+          } else {
+            message.textContent = "Something went wrong: " + error.message;
+          }
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
