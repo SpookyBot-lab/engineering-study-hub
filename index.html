@@ -653,8 +653,13 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, on
   };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 const auth = getAuth(app);
+const db = getFirestore(app);
+
+const verifyEmailSettings = {
+  url: "https://engineeringstudyhub.github.io/verifyEmail.html",
+  handleCodeInApp: true
+};
 const CLOUDINARY_CLOUD_NAME = "vfnj6izy";
 
   function escapeHTML(value) {
@@ -752,7 +757,7 @@ document.getElementById("footerYear").textContent = new Date().getFullYear();
     try {
       if (authMode === "signup") {
         const userCred = await createUserWithEmailAndPassword(auth, email, password);
-        await sendEmailVerification(userCred.user);
+        await sendEmailVerification(userCred.user, verifyEmailSettings);
         authError.style.color = "#2e7d5b";
         authError.textContent = "Account created! Check your email to verify before logging in.";
         await signOut(auth);
@@ -1573,7 +1578,7 @@ async function loadFavoriteCourses(searchTerm = "") {
         e.preventDefault();
         resendLink.style.pointerEvents = "none";
         try {
-          await sendEmailVerification(unverifiedUser);
+          await sendEmailVerification(unverifiedUser, verifyEmailSettings);
           authError.style.color = "#2e7d5b";
           authError.textContent = "Verification email resent — check your inbox.";
         } catch (error) {
