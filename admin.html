@@ -77,7 +77,7 @@
 
   #adminPanel { display: none; }
 
-  .appLayout { display: flex; min-height: 100vh; }
+  .appLayout { display: flex; height: 100vh; }
 
   .sidebar {
     width: 230px;
@@ -90,6 +90,7 @@
     position: sticky;
     top: 0;
     height: 100vh;
+    overflow-y: auto;
   }
 
   .sidebar-title { padding: 0 22px 22px; border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 14px; }
@@ -124,19 +125,64 @@
     cursor: pointer;
   }
 
-  .mainArea { flex: 1; min-width: 0; padding: 32px 40px 60px; max-width: 800px; }
+  #themeToggleBtn {
+    margin: auto 22px 0;
+    background: rgba(255,255,255,0.1);
+    color: #f2efe6;
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 8px 0;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .mainArea {
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 32px 40px 60px;
+    max-width: 800px;
+  }
 
   .viewTitle { color: #12233d; margin-top: 0; }
 
-  .statsRow { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .sectionHeaderRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 26px;
+  }
 
-  .statCard {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 16px 22px;
-    box-shadow: 0 4px 12px rgba(18,35,61,0.06);
-    min-width: 150px;
+  .sectionSubheading {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+
+  .liveBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #2e7d5b;
+    background: rgba(46, 125, 91, 0.12);
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
+
+  .liveDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #2e7d5b;
+    animation: livePulse 1.6s ease-in-out infinite;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.75); }
   }
 
   .deptBoxGrid {
@@ -190,10 +236,19 @@
   border-radius: 10px;
   min-width: 20px;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
-  .statCard .statNum { font-size: 24px; font-weight: 700; color: #12233d; }
-  .statCard .statLabel { font-size: 12.5px; color: #8a8f98; }
+.newCountTag {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #2e7d5b;
+  background: rgba(46, 125, 91, 0.14);
+  padding: 1px 7px;
+  border-radius: 8px;
+}
 
   #courseForm input, #courseForm select, #courseForm textarea {
     width: 100%;
@@ -208,6 +263,20 @@
   }
 
   #courseForm label { font-size: 13px; color: #6b7280; display: block; margin-bottom: 6px; }
+
+  .linkAddRow {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+
+  .linkAddRow input { width: auto; flex: 1; min-width: 160px; margin-bottom: 0; }
+  .linkAddRow button { flex-shrink: 0; }
+
+  .inlineFormMsg { font-size: 12.5px; margin: 0 0 10px; min-height: 15px; }
+  .inlineFormMsg.error { color: #c0392b; }
+  .inlineFormMsg.success { color: #2e7d5b; }
   #courseForm h4 { color: #12233d; margin: 18px 0 8px; }
 
   .secondaryBtn {
@@ -227,6 +296,46 @@
     padding: 12px;
     margin-bottom: 8px;
     background: var(--card-bg);
+  }
+
+  .fileChipList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 14px;
+  }
+
+  .fileChip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-strong);
+    border-radius: 20px;
+    padding: 5px 8px 5px 14px;
+    font-size: 12.5px;
+  }
+
+  .fileChip a {
+    color: var(--accent);
+    text-decoration: none;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .fileChip .fileChipRemove {
+    border: none;
+    background: rgba(192, 57, 43, 0.12);
+    color: #c0392b;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 11px;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
   }
 
   #submitBtn {
@@ -251,7 +360,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 12px;
     box-shadow: 0 4px 12px rgba(18,35,61,0.05);
+  }
+
+  .courseRow > span:first-child {
+    min-width: 0;
+    word-break: break-word;
   }
 
   .courseRow .editBtn, .courseRow .deleteBtn {
@@ -267,11 +383,65 @@
   .courseRow .deleteBtn { background: #c0392b; color: white; }
 
   @media (max-width: 720px) {
-    .appLayout { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; padding: 14px 16px; overflow-x: auto; }
-    .sidebar-title, #adminLogoutBtn { display: none; }
-    #sidebarNav { flex-direction: row; padding: 0; }
-    .mainArea { padding: 22px 18px 50px; }
+    .appLayout { flex-direction: column; height: auto; }
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+      flex-direction: row;
+      align-items: center;
+      padding: 14px 16px;
+      overflow-x: auto;
+      overflow-y: visible;
+      gap: 4px;
+    }
+    .sidebar-title { display: none; }
+    #sidebarNav { flex-direction: row; padding: 0; flex-shrink: 0; }
+    #themeToggleBtn, #adminLogoutBtn {
+      margin: 0 0 0 8px;
+      padding: 8px 14px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .mainArea { height: auto; overflow-y: visible; padding: 22px 18px 50px; }
+
+    #loginBox { margin: 40px 16px; padding: 26px 22px; }
+
+    .welcomeBanner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 20px 22px;
+    }
+    .bannerIllustration svg { width: 60px; height: auto; }
+
+    .deptBoxGrid { gap: 10px; }
+    .sectionHeaderRow { margin-top: 20px; }
+    .deptBox { min-width: 0; flex: 1 1 100%; }
+
+    .feedbackSplit { flex-direction: column; }
+    #feedbackStudentList { width: 100%; max-height: 180px; overflow-y: auto; }
+    .replyRow { flex-wrap: wrap; }
+    .replyRow input { width: 100%; }
+
+    .courseRow .editBtn, .courseRow .deleteBtn {
+      padding: 6px 10px;
+      font-size: 12.5px;
+    }
+
+    #courseDeptTabs, #courseLevelTabs { gap: 6px !important; }
+
+    #loginBox input,
+    #courseForm input,
+    #courseForm select,
+    #courseForm textarea,
+    #adminReplyInput,
+    #announcementInput,
+    #bankNameInput,
+    #accountNumberInput,
+    #accountNameInput {
+      font-size: 16px;
+    }
   }
 
     .welcomeBanner {
@@ -306,9 +476,6 @@
     color: var(--text-muted);
   }
 
-  .statCard .statNum { color: var(--text-primary); }
-  .statCard .statLabel { color: var(--text-muted); }
-
   .courseRow span { color: var(--text-primary); }
 
   #saveMsg { color: var(--text-primary); }
@@ -337,19 +504,49 @@
   .tabBtn:hover { border-color: var(--accent); }
   .tabBtn.active { background: #12233d; color: white; border-color: #12233d; }
 
-  .viewMoreToggleBtn {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 8px 12px;
-    margin-top: 4px;
-    background: none;
-    border: 1px dashed var(--border-strong);
+  .feedbackSplit { display: flex; gap: 20px; }
+
+  #feedbackStudentList { width: 220px; flex-shrink: 0; max-height: 400px; overflow-y: auto; padding-right: 2px; }
+
+  #donationsList { max-height: 480px; overflow-y: auto; padding-right: 4px; }
+
+  .feedbackChatArea { flex: 1; min-width: 0; }
+
+  #adminFeedbackThread {
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    cursor: pointer;
-    font-size: 12.5px;
-    color: var(--accent);
+    padding: 12px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    scroll-behavior: smooth;
+  }
+
+  .replyRow { display: flex; gap: 10px; }
+
+  .replyRow input {
+    flex: 1;
+    min-width: 0;
+    padding: 9px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--text-primary);
     font-family: inherit;
+  }
+
+  .replyRow button {
+    padding: 9px 18px;
+    background: #12233d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    flex-shrink: 0;
   }
 </style>
 </head>
@@ -377,8 +574,9 @@
           <button data-view="announcements" class="nav-btn">Announcements</button>
           <button data-view="feedback" class="nav-btn">Feedback</button>
           <button data-view="donations" class="nav-btn">Donations <span id="donationBadge" style="display:none; background:#c0392b; color:white; font-size:11px; padding:1px 7px; border-radius:10px; margin-left:4px;"></span></button>
+          <button data-view="admins" class="nav-btn">Admins</button>
         </nav>
-<button id="themeToggleBtn" style="margin:auto 22px 0; background:rgba(255,255,255,0.1); color:#f2efe6; border:1px solid rgba(255,255,255,0.25); padding:8px 0; border-radius:8px; font-size:13px; cursor:pointer;">🌙 Dark Mode</button>
+<button id="themeToggleBtn">🌙 Dark Mode</button>
 <button id="adminLogoutBtn">Log Out</button>
       </aside>
 
@@ -400,8 +598,13 @@
                 </svg>
               </div>
             </div>
-<div class="statsRow" id="statsRow"></div>
 <div class="deptBoxGrid" id="deptBoxGrid"></div>
+
+              <div class="sectionHeaderRow">
+                <h3 class="sectionSubheading">🎓 Registered Students</h3>
+                <span class="liveBadge"><span class="liveDot"></span>Live</span>
+              </div>
+              <div class="deptBoxGrid" id="studentStatsGrid"></div>
         </div>
 
         <div id="addView" class="viewPanel" style="display:none;">
@@ -425,21 +628,40 @@
     <select id="courseSession" required>
       <option value="">Select academic session</option>
     </select>
-            <input type="text" id="courseCredit" placeholder="Credit units (e.g. 3 units)">
+            <select id="courseCredit">
+              <option value="">Select credit unit</option>
+              <option value="0 Unit">0 Unit</option>
+              <option value="1 Unit">1 Unit</option>
+              <option value="2 Units">2 Units</option>
+              <option value="3 Units">3 Units</option>
+            </select>
             <textarea id="courseDescription" placeholder="Short course description (optional)" rows="2"></textarea>
-            <input type="text" id="coursePrereq" placeholder="Prerequisites (e.g. MTH101) — optional">
 
             <h4>Notes Sections</h4>
             <div id="notesContainer"></div>
             <button type="button" id="addNoteBtn" class="secondaryBtn">+ Add another note section</button>
-            <label>Or upload a full notes document (PDF/Word):</label>
-            <input type="file" id="noteFile" accept=".pdf,.doc,.docx">
+            <label>Or upload notes document(s) (PDF/Word) — you can select more than one:</label>
+            <input type="file" id="noteFile" accept=".pdf,.doc,.docx" multiple>
+            <div class="linkAddRow">
+              <input type="url" id="noteLinkUrl" placeholder="Or paste a link (Drive, YouTube, etc.)">
+              <input type="text" id="noteLinkLabel" placeholder="Label (optional)">
+              <button type="button" id="addNoteLinkBtn" class="secondaryBtn">+ Add link</button>
+            </div>
+            <p id="noteLinkMsg" class="inlineFormMsg"></p>
+            <div id="noteFilesList" class="fileChipList"></div>
 
             <h4>Q&A</h4>
             <div id="qaContainer"></div>
             <button type="button" id="addQaBtn" class="secondaryBtn">+ Add another question</button>
-            <label>Or upload a Q&A document (PDF/Word):</label>
-            <input type="file" id="qaFile" accept=".pdf,.doc,.docx">
+            <label>Or upload Q&amp;A document(s) (PDF/Word) — you can select more than one:</label>
+            <input type="file" id="qaFile" accept=".pdf,.doc,.docx" multiple>
+            <div class="linkAddRow">
+              <input type="url" id="qaLinkUrl" placeholder="Or paste a link (Drive, YouTube, etc.)">
+              <input type="text" id="qaLinkLabel" placeholder="Label (optional)">
+              <button type="button" id="addQaLinkBtn" class="secondaryBtn">+ Add link</button>
+            </div>
+            <p id="qaLinkMsg" class="inlineFormMsg"></p>
+            <div id="qaFilesList" class="fileChipList"></div>
 
                         <button type="submit" id="submitBtn">Save Course</button>
             <button type="button" id="cancelEditBtn" class="secondaryBtn" style="display:none; margin-left:8px;">Cancel</button>
@@ -456,14 +678,16 @@
 
         <div id="feedbackView" class="viewPanel" style="display:none;">
           <h2 class="viewTitle">Student Feedback & Requests</h2>
-          <div style="display:flex; gap:20px;">
-            <div id="feedbackStudentList" style="width:220px; flex-shrink:0;"></div>
-            <div style="flex:1;">
-              <div id="adminFeedbackThread" style="max-height:400px; overflow-y:auto; overflow-x:hidden; margin-bottom:10px; border:1px solid #eae5d8; border-radius:8px; padding:12px; min-height:200px; display:flex; flex-direction:column; scroll-behavior:smooth;"></div>
-              <input type="text" id="adminReplyInput" placeholder="Type a reply..." style="width:70%; padding:9px; border:1px solid #d8d2c2; border-radius:6px;">
-              <button id="sendReplyBtn" style="padding:9px 18px; background:#12233d; color:white; border:none; border-radius:6px; cursor:pointer;">Reply</button>
+          <div class="feedbackSplit">
+            <div id="feedbackStudentList"></div>
+            <div class="feedbackChatArea">
+              <div id="adminFeedbackThread"></div>
+              <div class="replyRow">
+              <input type="text" id="adminReplyInput" placeholder="Type a reply...">
+              <button id="sendReplyBtn">Reply</button>
             </div>
           </div>
+        </div>
         </div>
         <div id="donationsView" class="viewPanel" style="display:none;">
           <h2 class="viewTitle">Donations</h2>
@@ -488,6 +712,16 @@
         <div id="adminAnnouncementsList"></div>
         </div>
 
+        <div id="adminsView" class="viewPanel" style="display:none;">
+          <h2 class="viewTitle">Admin Access</h2>
+          <input type="email" id="newAdminEmailInput" placeholder="Email address" style="max-width:320px;">
+          <button id="addAdminBtn" style="background:#12233d; color:white; border:none; padding:10px 20px; border-radius:8px; cursor:pointer; margin:8px 0;">Add Admin</button>
+          <p id="addAdminMsg" style="font-size:13px;"></p>
+          <hr style="margin:24px 0;">
+          <h4 style="color:var(--text-primary);">Current Admins</h4>
+          <div id="adminsList"></div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -498,8 +732,8 @@
 
   <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, setDoc, getDoc, where } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, orderBy, setDoc, getDoc, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBkavWHN37Qu-4UphxFDihacSJJfbjD9Io",
@@ -514,9 +748,65 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// A second, isolated Firebase app instance. createUserWithEmailAndPassword
+// signs in as the newly created user on whatever auth instance it's called
+// on -- using a separate instance here means adding a new admin never signs
+// the current admin out of their own session.
+const secondaryApp = initializeApp(firebaseConfig, "AdminCreationApp");
+const secondaryAuth = getAuth(secondaryApp);
+
+function generateTempPassword() {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(36)).join("").slice(0, 24);
+}
+const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+
 document.getElementById("footerYear").textContent = new Date().getFullYear();
   let editingCourseId = null;
   let editingCourseData = null; // holds the full existing course data while editing
+
+  // Files already attached to the course being added/edited (each an
+  // { url, name } pair). Newly chosen files are uploaded and appended to
+  // these on save; the ✕ on a chip removes it from the course entirely.
+  let currentNoteFiles = [];
+  let currentQaFiles = [];
+
+  function renderFileChipList(containerId, files, onRemove) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+    files.forEach((file, index) => {
+      const chip = document.createElement("div");
+      chip.className = "fileChip";
+
+      const link = document.createElement("a");
+      link.href = file.url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = (file.type === "link" ? "🔗 " : "📄 ") + (file.name || (file.type === "link" ? "link" : "file"));
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "fileChipRemove";
+      removeBtn.textContent = "✕";
+      removeBtn.title = "Remove this file";
+      removeBtn.addEventListener("click", () => {
+        files.splice(index, 1);
+        onRemove();
+      });
+
+      chip.append(link, removeBtn);
+      container.appendChild(chip);
+    });
+  }
+
+  function renderNoteFilesList() {
+    renderFileChipList("noteFilesList", currentNoteFiles, renderNoteFilesList);
+  }
+
+  function renderQaFilesList() {
+    renderFileChipList("qaFilesList", currentQaFiles, renderQaFilesList);
+  }
       const navButtons = document.querySelectorAll(".nav-btn");
   const views = {
     overview: document.getElementById("overviewView"),
@@ -524,7 +814,8 @@ document.getElementById("footerYear").textContent = new Date().getFullYear();
     courses: document.getElementById("coursesView"),
     announcements: document.getElementById("announcementsView"),
     feedback: document.getElementById("feedbackView"),
-    donations: document.getElementById("donationsView")
+    donations: document.getElementById("donationsView"),
+    admins: document.getElementById("adminsView")
   };
 
     const themeToggleBtn = document.getElementById("themeToggleBtn");
@@ -555,11 +846,16 @@ document.getElementById("footerYear").textContent = new Date().getFullYear();
     Object.keys(views).forEach((key) => {
       views[key].style.display = key === viewName ? "block" : "none";
     });
+    // Each nav item is its own static "page" — jump the scrollable main
+    // pane back to the top on every switch, like a fresh screen in an app,
+    // instead of leaving it wherever the previous page had scrolled to.
+    document.querySelector(".mainArea").scrollTo({ top: 0, behavior: "instant" });
   if (viewName === "courses") { renderCourseDeptTabs(); renderCourseLevelTabs(); loadAdminCourseList(); }
   if (viewName === "overview") loadOverviewStats();
   if (viewName === "announcements") loadAdminAnnouncements();
   if (viewName === "feedback") loadFeedbackStudentList();
   if (viewName === "donations") { loadBankDetails(); loadDonationsList(); }
+  if (viewName === "admins") loadAdminsList();
 }
 
   navButtons.forEach((btn) => {
@@ -613,9 +909,7 @@ document.getElementById("footerYear").textContent = new Date().getFullYear();
   }
 
     let selectedStudentId = null;
-    const FEEDBACK_PAGE_SIZE =10
     let feedbackStudentEntries = [];
-    let feedbackListExpanded = false;
 
   function getLatestTimestamp(data) {
     const messages = data.messages || [];
@@ -641,23 +935,21 @@ document.getElementById("footerYear").textContent = new Date().getFullYear();
     // Newest conversation first, based on each student's most recent message
     feedbackStudentEntries.sort((a, b) => getLatestTimestamp(b.data) - getLatestTimestamp(a.data));
 
-    feedbackListExpanded = false;
     renderFeedbackStudentList();
   }
 
+  // Renders the full list inside a fixed-height, internally scrolling box
+  // (see #feedbackStudentList CSS) instead of paging it behind a
+  // "view more" click — every conversation is always reachable by scroll.
   function renderFeedbackStudentList() {
     const container = document.getElementById("feedbackStudentList");
     container.innerHTML = "";
 
-    const visibleEntries = feedbackListExpanded
-      ? feedbackStudentEntries
-      : feedbackStudentEntries.slice(0, FEEDBACK_PAGE_SIZE);
-
-    visibleEntries.forEach(({ id, data }) => {
+    feedbackStudentEntries.forEach(({ id, data }) => {
       const btn = document.createElement("button");
       btn.textContent = data.studentEmail || "Unknown student";
       const isSelected = id === selectedStudentId;
-      btn.style.cssText = `display:block; width:100%; text-align:left; padding:10px 12px; margin-bottom:6px; background:${isSelected ? "#eeeadf" : "white"}; border:1px solid #eae5d8; border-radius:8px; cursor:pointer; font-size:13px;`;
+      btn.style.cssText = `display:block; width:100%; text-align:left; padding:10px 12px; margin-bottom:6px; background:${isSelected ? "var(--bg-main)" : "var(--card-bg)"}; color:var(--text-primary); border:1px solid var(--border-color); border-radius:8px; cursor:pointer; font-size:13px;`;
       btn.addEventListener("click", () => {
         selectedStudentId = id;
         renderFeedbackStudentList();
@@ -665,18 +957,6 @@ document.getElementById("footerYear").textContent = new Date().getFullYear();
       });
       container.appendChild(btn);
     });
-
-    if (feedbackStudentEntries.length > FEEDBACK_PAGE_SIZE) {
-      const toggleBtn = document.createElement("button");
-      const hiddenCount = feedbackStudentEntries.length - FEEDBACK_PAGE_SIZE;
-      toggleBtn.textContent = feedbackListExpanded ? "Show less" : `View ${hiddenCount} more`;
-      toggleBtn.className = "viewMoreToggleBtn";
-      toggleBtn.addEventListener("click", () => {
-        feedbackListExpanded = !feedbackListExpanded;
-        renderFeedbackStudentList();
-      });
-      container.appendChild(toggleBtn);
-    }
   }
 
 function formatFeedbackTimestamp(timestamp) {
@@ -704,7 +984,13 @@ function formatFeedbackTimestamp(timestamp) {
 
     const docRef = doc(db, "feedback", selectedStudentId);
     const docSnap = await getDoc(docRef);
-    const messages = docSnap.exists() ? docSnap.data().messages || [] : [];
+    const allMessages = docSnap.exists() ? docSnap.data().messages || [] : [];
+    const messages = allMessages.filter((m) => !m.timestamp || (Date.now() - m.timestamp < ONE_DAY_MS));
+
+    if (messages.length === 0) {
+      container.innerHTML = "<p style='color:#8a8f98; font-size:13px;'>No messages in the last 24 hours.</p>";
+      return;
+    }
 
     container.innerHTML = "";
     messages.forEach((m) => {
@@ -743,6 +1029,9 @@ function formatFeedbackTimestamp(timestamp) {
     let messages = docSnap.exists() ? docSnap.data().messages || [] : [];
     let studentEmail = docSnap.exists() ? docSnap.data().studentEmail : "";
 
+    // Drop messages older than 24h so the thread doesn't grow forever.
+    messages = messages.filter((m) => !m.timestamp || (Date.now() - m.timestamp < ONE_DAY_MS));
+
     messages.push({ from: "admin", text: text, timestamp: Date.now() });
     await setDoc(docRef, { messages: messages, studentEmail: studentEmail });
 
@@ -750,24 +1039,28 @@ function formatFeedbackTimestamp(timestamp) {
     loadAdminFeedbackThread();
   });
 
+// Shared across the course-count boxes and the student-count boxes below.
+const DEPARTMENTS = ["Computer Engineering", "Mechanical Engineering", "Electrical Engineering"];
+const LEVELS = ["100L", "200L", "300L", "400L"];
+const DEPT_COLORS = {
+  "Computer Engineering": "#4a90a4",
+  "Mechanical Engineering": "#c8712f",
+  "Electrical Engineering": "#2e7d5b"
+};
+
+function buildEmptyDeptLevelMap(valueFactory) {
+  const byDept = {};
+  DEPARTMENTS.forEach((dept) => {
+    byDept[dept] = {};
+    LEVELS.forEach((lvl) => { byDept[dept][lvl] = valueFactory(); });
+  });
+  return byDept;
+}
+
 async function loadOverviewStats() {
   const querySnapshot = await getDocs(collection(db, "courses"));
-  const total = querySnapshot.size;
 
-  const departments = ["Computer Engineering", "Mechanical Engineering", "Electrical Engineering"];
-  const levels = ["100L", "200L", "300L", "400L"];
-  const deptColors = {
-    "Computer Engineering": "#4a90a4",
-    "Mechanical Engineering": "#c8712f",
-    "Electrical Engineering": "#2e7d5b"
-  };
-
-  // Build an empty { dept: { level: count } } structure
-  const byDept = {};
-  departments.forEach((dept) => {
-    byDept[dept] = { "100L": 0, "200L": 0, "300L": 0, "400L": 0 };
-  });
-
+  const byDept = buildEmptyDeptLevelMap(() => 0);
   querySnapshot.forEach((docSnap) => {
     const course = docSnap.data();
     if (byDept[course.department] && byDept[course.department][course.level] !== undefined) {
@@ -775,25 +1068,20 @@ async function loadOverviewStats() {
     }
   });
 
-  // Overall total stays up top
-  document.getElementById("statsRow").innerHTML = `
-    <div class="statCard"><div class="statNum">${total}</div><div class="statLabel">Total Courses</div></div>
-  `;
-
   // One tab box per department, levels listed beneath
-  document.getElementById("deptBoxGrid").innerHTML = departments.map((dept) => {
-    const levelRows = levels.map((lvl) => `
+  document.getElementById("deptBoxGrid").innerHTML = DEPARTMENTS.map((dept) => {
+    const levelRows = LEVELS.map((lvl) => `
       <div class="deptLevelRow">
         <span class="levelName">${lvl}</span>
         <span class="levelCount">${byDept[dept][lvl]}</span>
       </div>
     `).join("");
 
-    const deptTotal = levels.reduce((sum, lvl) => sum + byDept[dept][lvl], 0);
+    const deptTotal = LEVELS.reduce((sum, lvl) => sum + byDept[dept][lvl], 0);
 
     return `
       <div class="deptBox">
-        <div class="deptBoxHeader" style="background:${deptColors[dept]};">
+        <div class="deptBoxHeader" style="background:${DEPT_COLORS[dept]};">
           ${dept} <span style="opacity:0.85; font-weight:400;">(${deptTotal})</span>
         </div>
         <div class="deptBoxBody">
@@ -803,6 +1091,221 @@ async function loadOverviewStats() {
     `;
   }).join("");
 }
+
+// Student headcount per department/level, split into "new" (joined within
+// the last 24 hours) and "old" (everyone else). Backed by a live onSnapshot
+// listener so it updates in real time as students sign up, without a
+// page refresh or re-clicking into the Overview tab.
+const NEW_USER_WINDOW_MS = 24 * 60 * 60 * 1000;
+let studentStatsUnsub = null;
+
+function startStudentStatsListener() {
+  if (studentStatsUnsub) return;
+
+  studentStatsUnsub = onSnapshot(
+    collection(db, "studentProfiles"),
+    (querySnapshot) => renderStudentStats(querySnapshot),
+    (error) => {
+      console.error("Student stats listener error:", error);
+      document.getElementById("studentStatsGrid").innerHTML =
+        `<p style="font-size:12.5px; color:var(--text-muted);">Couldn't load student counts.</p>`;
+    }
+  );
+}
+
+function buildDeptLevelChartSvg(dept, levelData) {
+  const W = 240, H = 176;
+  const marginLeft = 20, marginRight = 20;
+  const chartTop = 30, chartBottom = 132;
+  const barAreaHeight = chartBottom - chartTop;
+  const maxBarHeight = barAreaHeight - 16;
+  const slot = (W - marginLeft - marginRight) / levelData.length;
+  const barWidth = 28;
+  const axisLabelY = chartBottom + 20;
+  const deptColor = DEPT_COLORS[dept] || "#4a90a4";
+  const RED = "#e11d2e";
+
+  const maxTotal = Math.max(1, ...levelData.map((d) => d.total));
+
+  const points = levelData.map((d, i) => {
+    const x = marginLeft + slot * i + slot / 2;
+    const barHeight = d.total > 0 ? Math.max(4, (d.total / maxTotal) * maxBarHeight) : 0;
+    const barY = chartBottom - barHeight;
+    return { ...d, x, barHeight, barY };
+  });
+
+  const pctValues = points.map((p) => (p.total > 0 ? (p.newCount / p.total) * 100 : 0));
+  let lo = Math.min(...pctValues), hi = Math.max(...pctValues);
+  if (lo === hi) { lo -= 5; hi += 5; }
+  const pad = (hi - lo) * 0.25 || 5;
+  lo = Math.max(0, lo - pad);
+  hi = Math.min(100, hi + pad);
+  if (hi <= lo) { lo = 0; hi = 100; }
+
+  const pctBandTop = chartTop + 6, pctBandBottom = chartBottom - 6;
+  const mapY = (pct) => pctBandBottom - ((pct - lo) / (hi - lo)) * (pctBandBottom - pctBandTop);
+
+  const linePoints = points.map((p, i) => ({ x: p.x, y: mapY(pctValues[i]) }));
+
+  const bars = points.map((p) => {
+    const title = `${p.lvl}: ${p.total} total (${p.newCount} new in the last 24 hours)`;
+    const valueLabelY = p.barHeight > 0 ? p.barY - 8 : chartBottom - 10;
+    const barRect = p.barHeight > 0
+      ? `<rect x="${(p.x - barWidth / 2).toFixed(1)}" y="${p.barY.toFixed(1)}" width="${barWidth}" height="${p.barHeight.toFixed(1)}" rx="4" fill="${deptColor}"></rect>`
+      : "";
+    return `
+      <g>
+        <title>${title}</title>
+        ${barRect}
+        <text x="${p.x.toFixed(1)}" y="${valueLabelY.toFixed(1)}" text-anchor="middle" font-size="12" font-weight="700" style="fill:var(--text-primary);">${p.total}</text>
+        <text x="${p.x.toFixed(1)}" y="${axisLabelY}" text-anchor="middle" font-size="10.5" font-weight="600" style="fill:var(--text-muted);">${p.lvl}</text>
+      </g>
+    `;
+  }).join("");
+
+  const polyline = `<polyline points="${linePoints.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ")}" fill="none" stroke="${RED}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline>`;
+
+  const pillsAndDots = linePoints.map((p, i) => {
+    const text = `${pctValues[i].toFixed(1)}%`;
+    const pillWidth = Math.max(34, 10 + text.length * 7);
+    const pillHeight = 16;
+    let pillY = p.y - 26;
+    if (pillY < 4) pillY = p.y + 10;
+    return `
+      <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" fill="${RED}"></circle>
+      <rect x="${(p.x - pillWidth / 2).toFixed(1)}" y="${pillY.toFixed(1)}" width="${pillWidth}" height="${pillHeight}" rx="8" fill="${RED}"></rect>
+      <text x="${p.x.toFixed(1)}" y="${(pillY + pillHeight - 4.5).toFixed(1)}" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">${text}</text>
+    `;
+  }).join("");
+
+  return `
+    <svg viewBox="0 0 ${W} ${H}" width="100%" height="auto" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${dept} student counts by level">
+      <line x1="${marginLeft}" y1="${chartBottom}" x2="${W - marginRight}" y2="${chartBottom}" stroke="var(--border-color)" stroke-width="1"></line>
+      ${bars}
+      ${polyline}
+      ${pillsAndDots}
+    </svg>
+  `;
+}
+
+function renderStudentStats(querySnapshot) {
+  const now = Date.now();
+  const byDept = buildEmptyDeptLevelMap(() => ({ total: 0, newCount: 0 }));
+
+  querySnapshot.forEach((docSnap) => {
+    const profile = docSnap.data();
+    const deptBucket = byDept[profile.department];
+    if (!deptBucket || !deptBucket[profile.level]) return;
+
+    deptBucket[profile.level].total++;
+    if (typeof profile.createdAt === "number" && now - profile.createdAt < NEW_USER_WINDOW_MS) {
+      deptBucket[profile.level].newCount++;
+    }
+  });
+
+  document.getElementById("studentStatsGrid").innerHTML = DEPARTMENTS.map((dept) => {
+    const levelData = LEVELS.map((lvl) => ({ lvl, total: byDept[dept][lvl].total, newCount: byDept[dept][lvl].newCount }));
+    const deptTotal = levelData.reduce((sum, d) => sum + d.total, 0);
+
+    return `
+      <div class="deptBox">
+        <div class="deptBoxHeader" style="background:${DEPT_COLORS[dept]};">
+          ${dept} <span style="opacity:0.85; font-weight:400;">(${deptTotal})</span>
+        </div>
+        <div class="deptBoxBody" style="padding:10px 10px 4px;">
+          ${buildDeptLevelChartSvg(dept, levelData)}
+          <p style="font-size:10.5px; color:var(--text-muted); text-align:center; margin:2px 0 6px;">Red line = % of that level who joined in the last 24 hours</p>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+async function loadAdminsList() {
+  try {
+    const querySnapshot = await getDocs(collection(db, "adminEmails"));
+    renderAdminsList(querySnapshot);
+  } catch (error) {
+    console.error("Admins list error:", error);
+    document.getElementById("adminsList").innerHTML =
+      `<p style="font-size:12.5px; color:var(--text-muted);">Couldn't load admin list.</p>`;
+  }
+}
+
+function renderAdminsList(querySnapshot) {
+  const container = document.getElementById("adminsList");
+  if (querySnapshot.empty) {
+    container.innerHTML = `<p style="font-size:12.5px; color:var(--text-muted);">No additional admins yet.</p>`;
+    return;
+  }
+
+  container.innerHTML = "";
+  querySnapshot.forEach((docSnap) => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border-color);";
+    row.innerHTML = `
+      <span style="font-size:14px; color:var(--text-primary);">${docSnap.id}</span>
+      <button style="background:none; border:1px solid #c0392b; color:#c0392b; padding:4px 12px; border-radius:6px; cursor:pointer; font-size:12.5px;">Remove</button>
+    `;
+    row.querySelector("button").addEventListener("click", async () => {
+      if (!confirm(`Remove admin access for ${docSnap.id}?`)) return;
+      await deleteDoc(doc(db, "adminEmails", docSnap.id));
+      loadAdminsList();
+    });
+    container.appendChild(row);
+  });
+}
+
+document.getElementById("addAdminBtn").addEventListener("click", async () => {
+  const msg = document.getElementById("addAdminMsg");
+  const input = document.getElementById("newAdminEmailInput");
+  const email = input.value.trim().toLowerCase();
+
+  if (!email || !email.includes("@")) {
+    msg.style.color = "#c0392b";
+    msg.textContent = "Enter a valid email address.";
+    return;
+  }
+
+  msg.style.color = "var(--text-muted)";
+  msg.textContent = "Working...";
+
+  try {
+    // Try creating a brand-new login for them on the isolated secondary
+    // auth instance, with a random password they'll never see. If this
+    // fails because the email is already in use, we deliberately refuse
+    // to grant admin access -- an admin login must never double as an
+    // existing student's login.
+    await createUserWithEmailAndPassword(secondaryAuth, email, generateTempPassword());
+    await signOut(secondaryAuth); // clean up the secondary session
+  } catch (error) {
+    if (error.code === "auth/email-already-in-use") {
+      msg.style.color = "#c0392b";
+      msg.textContent = `${email} already has an account (likely a student sign-up), so it can't be granted admin access. Use a separate, dedicated email address for this admin instead.`;
+    } else {
+      console.error("Admin account creation error:", error);
+      msg.style.color = "#c0392b";
+      msg.textContent = "Couldn't create a login for that email. Check the console for details.";
+    }
+    return;
+  }
+
+  try {
+    await setDoc(doc(db, "adminEmails", email), {
+      addedAt: Date.now(),
+      addedBy: auth.currentUser.email
+    });
+    await sendPasswordResetEmail(auth, email);
+    msg.style.color = "green";
+    msg.textContent = `Admin access granted. A password-setup email was sent to ${email}.`;
+    input.value = "";
+    loadAdminsList();
+  } catch (error) {
+    console.error("Add admin error:", error);
+    msg.style.color = "#c0392b";
+    msg.textContent = "Account created, but granting admin access failed. Check the console for details.";
+  }
+});
 
   const CLOUDINARY_CLOUD_NAME = "vfnj6izy";
   const CLOUDINARY_UPLOAD_PRESET = "study_hub_uploads";
@@ -893,6 +1396,59 @@ function addQaItem(question = "", answer = "") {
 
 document.getElementById("addNoteBtn").addEventListener("click", () => addNoteSection());
 document.getElementById("addQaBtn").addEventListener("click", () => addQaItem());
+
+// Lets an admin attach an external link (Drive, YouTube, etc.) instead of
+// or alongside uploaded documents. Links are stored the same way as
+// uploaded files ({ url, name, type }), so they show up in the same chip
+// list and save with the course as-is, no upload step needed.
+function addLinkEntry({ urlInputId, labelInputId, msgId, targetArray, render }) {
+  const urlInput = document.getElementById(urlInputId);
+  const labelInput = document.getElementById(labelInputId);
+  const msg = document.getElementById(msgId);
+  const url = urlInput.value.trim();
+
+  msg.textContent = "";
+  msg.className = "inlineFormMsg";
+
+  if (!url) {
+    msg.textContent = "Paste a link first.";
+    msg.classList.add("error");
+    return;
+  }
+  if (!isSafeHttpUrl(url)) {
+    msg.textContent = "That doesn't look like a valid http(s) link.";
+    msg.classList.add("error");
+    return;
+  }
+
+  targetArray.push({ url, name: labelInput.value.trim() || url, type: "link" });
+  render();
+
+  urlInput.value = "";
+  labelInput.value = "";
+  msg.textContent = "Link added.";
+  msg.classList.add("success");
+}
+
+document.getElementById("addNoteLinkBtn").addEventListener("click", () => {
+  addLinkEntry({
+    urlInputId: "noteLinkUrl",
+    labelInputId: "noteLinkLabel",
+    msgId: "noteLinkMsg",
+    targetArray: currentNoteFiles,
+    render: renderNoteFilesList
+  });
+});
+
+document.getElementById("addQaLinkBtn").addEventListener("click", () => {
+  addLinkEntry({
+    urlInputId: "qaLinkUrl",
+    labelInputId: "qaLinkLabel",
+    msgId: "qaLinkMsg",
+    targetArray: currentQaFiles,
+    render: renderQaFilesList
+  });
+});
 
 addNoteSection();
 addQaItem();
@@ -1021,7 +1577,6 @@ div.style.borderLeft = `4px solid ${levelColors[course.level] || "#0d9488"}`;
       document.getElementById("courseSession").value = courseData.academicSession || "";
       document.getElementById("courseCredit").value = courseData.credit || "";
       document.getElementById("courseDescription").value = courseData.description || "";
-      document.getElementById("coursePrereq").value = courseData.prerequisites || "";
 
       // Clear existing sections, then rebuild one per saved note/question
       document.getElementById("notesContainer").innerHTML = "";
@@ -1042,6 +1597,28 @@ div.style.borderLeft = `4px solid ${levelColors[course.level] || "#0d9488"}`;
       } else {
         addQaItem();
       }
+
+      // Support both the current multi-file schema (noteFiles/qaFiles) and
+      // older courses saved with a single noteFileUrl/qaFileUrl.
+      if (Array.isArray(courseData.noteFiles) && courseData.noteFiles.length > 0) {
+        currentNoteFiles = courseData.noteFiles.map((f) => ({ url: f.url, name: f.name, type: f.type }));
+      } else if (courseData.noteFileUrl) {
+        currentNoteFiles = [{ url: courseData.noteFileUrl, name: courseData.noteFileName || "file" }];
+      } else {
+        currentNoteFiles = [];
+      }
+      document.getElementById("noteFile").value = "";
+      renderNoteFilesList();
+
+      if (Array.isArray(courseData.qaFiles) && courseData.qaFiles.length > 0) {
+        currentQaFiles = courseData.qaFiles.map((f) => ({ url: f.url, name: f.name, type: f.type }));
+      } else if (courseData.qaFileUrl) {
+        currentQaFiles = [{ url: courseData.qaFileUrl, name: courseData.qaFileName || "file" }];
+      } else {
+        currentQaFiles = [];
+      }
+      document.getElementById("qaFile").value = "";
+      renderQaFilesList();
 
       editingCourseId = courseId;
       document.getElementById("formTitle").textContent = "Edit Course";
@@ -1082,9 +1659,7 @@ populateSessionOptions();
     }
   }
 
-  const DONATIONS_PAGE_SIZE = 5;
   let donationEntries = [];
-  let donationsExpanded = false;
 
   async function loadDonationsList() {
     const q = query(collection(db, "donations"), orderBy("createdAt", "desc"));
@@ -1095,7 +1670,6 @@ populateSessionOptions();
       donationEntries.push({ id: docSnap.id, data: docSnap.data() });
     });
 
-    donationsExpanded = false;
     renderDonationsList();
 
     // Mark all as read now that admin has opened the tab
@@ -1121,6 +1695,8 @@ populateSessionOptions();
     }
   }
 
+  // Renders every donation inside a fixed-height, internally scrolling box
+  // (see #donationsList CSS) instead of paging it behind a "view more" click.
   function renderDonationsList() {
     const container = document.getElementById("donationsList");
 
@@ -1129,12 +1705,8 @@ populateSessionOptions();
       return;
     }
 
-    const visibleEntries = donationsExpanded
-      ? donationEntries
-      : donationEntries.slice(0, DONATIONS_PAGE_SIZE);
-
     container.innerHTML = "";
-    visibleEntries.forEach(({ data: d }) => {
+    donationEntries.forEach(({ data: d }) => {
       const div = document.createElement("div");
       div.className = "courseRow";
       div.style.flexDirection = "column";
@@ -1177,18 +1749,6 @@ populateSessionOptions();
       }
       container.appendChild(div);
     });
-
-    if (donationEntries.length > DONATIONS_PAGE_SIZE) {
-      const toggleBtn = document.createElement("button");
-      const hiddenCount = donationEntries.length - DONATIONS_PAGE_SIZE;
-      toggleBtn.className = "viewMoreToggleBtn";
-      toggleBtn.textContent = donationsExpanded ? "Show less" : `View ${hiddenCount} more`;
-      toggleBtn.addEventListener("click", () => {
-        donationsExpanded = !donationsExpanded;
-        renderDonationsList();
-      });
-      container.appendChild(toggleBtn);
-    }
   }
 
   async function loadBankDetails() {
@@ -1245,6 +1805,10 @@ populateSessionOptions();
     document.getElementById("qaContainer").innerHTML = "";
     addNoteSection();
     addQaItem();
+    currentNoteFiles = [];
+    currentQaFiles = [];
+    renderNoteFilesList();
+    renderQaFilesList();
     document.getElementById("formTitle").textContent = "Add a Course";
     document.getElementById("submitBtn").textContent = "Save Course";
     document.getElementById("cancelEditBtn").style.display = "none";
@@ -1254,21 +1818,38 @@ populateSessionOptions();
 const ADMIN_UID = "QlVYFfJMTwT8boiNsxo55YuKPnW2";
 
 onAuthStateChanged(auth, async (user) => {
-  if (user && user.uid !== ADMIN_UID) {
+  if (!user) {
+    loginBox.style.display = "block";
+    adminPanel.style.display = "none";
+    if (studentStatsUnsub) {
+      studentStatsUnsub();
+      studentStatsUnsub = null;
+    }
+    return;
+  }
+
+  let hasAdminAccess = user.uid === ADMIN_UID;
+  if (!hasAdminAccess && user.email) {
+    try {
+      const grantSnap = await getDoc(doc(db, "adminEmails", user.email.toLowerCase()));
+      hasAdminAccess = grantSnap.exists();
+    } catch (error) {
+      console.error("Admin access check failed:", error);
+    }
+  }
+
+  if (!hasAdminAccess) {
     errorMsg.textContent = "This account doesn't have admin access.";
     await signOut(auth);
     return;
   }
 
-  if (user) {
-    loginBox.style.display = "none";
-    adminPanel.style.display = "block";
-    loadOverviewStats();
-    updateDonationBadge();
-  } else {
-    loginBox.style.display = "block";
-    adminPanel.style.display = "none";
-  }
+  loginBox.style.display = "none";
+  adminPanel.style.display = "block";
+  loadOverviewStats();
+  startStudentStatsListener();
+  updateDonationBadge();
+  loadAdminsList();
 });
 
   const courseForm = document.getElementById("courseForm");
@@ -1278,23 +1859,20 @@ onAuthStateChanged(auth, async (user) => {
     e.preventDefault();
     saveMsg.textContent = "Saving...";
 
-    const noteFile = document.getElementById("noteFile").files[0];
-    const qaFile = document.getElementById("qaFile").files[0];
-
-    let noteFileUrl = null;
-    let qaFileUrl = null;
+    const newNoteFiles = Array.from(document.getElementById("noteFile").files);
+    const newQaFiles = Array.from(document.getElementById("qaFile").files);
 
     try {
-           if (noteFile) {
-        noteFileUrl = await uploadToCloudinary(noteFile);
-      } else if (editingCourseId && editingCourseData) {
-        noteFileUrl = editingCourseData.noteFileUrl || null;
+      // Upload any newly-selected files and append them to whatever is
+      // already attached (currentNoteFiles/currentQaFiles), so admins can
+      // add multiple documents over time without losing earlier ones.
+      for (const file of newNoteFiles) {
+        const url = await uploadToCloudinary(file);
+        currentNoteFiles.push({ url, name: file.name });
       }
-
-      if (qaFile) {
-        qaFileUrl = await uploadToCloudinary(qaFile);
-      } else if (editingCourseId && editingCourseData) {
-        qaFileUrl = editingCourseData.qaFileUrl || null;
+      for (const file of newQaFiles) {
+        const url = await uploadToCloudinary(file);
+        currentQaFiles.push({ url, name: file.name });
       }
 
             // Gather all note sections currently in the form
@@ -1325,13 +1903,10 @@ onAuthStateChanged(auth, async (user) => {
         academicSession: document.getElementById("courseSession").value,
         credit: document.getElementById("courseCredit").value,
         description: document.getElementById("courseDescription").value,
-        prerequisites: document.getElementById("coursePrereq").value,
         notes: notesArray,
-        noteFileUrl: noteFileUrl,
-        noteFileName: noteFile ? noteFile.name : (editingCourseData ? editingCourseData.noteFileName : null),
+        noteFiles: currentNoteFiles,
         qa: qaArray,
-        qaFileUrl: qaFileUrl,
-        qaFileName: qaFile ? qaFile.name : (editingCourseData ? editingCourseData.qaFileName : null),
+        qaFiles: currentQaFiles,
         createdAt: editingCourseId ? (editingCourseData.createdAt || Date.now()) : Date.now()
       };
 
@@ -1351,6 +1926,10 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById("qaContainer").innerHTML = "";
       addNoteSection();
       addQaItem();
+      currentNoteFiles = [];
+      currentQaFiles = [];
+      renderNoteFilesList();
+      renderQaFilesList();
       document.getElementById("formTitle").textContent = "Add a Course";
       document.getElementById("submitBtn").textContent = "Save Course";
     } catch (error) {

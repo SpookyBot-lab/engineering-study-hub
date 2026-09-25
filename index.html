@@ -1,455 +1,766 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Engineering Study Hub</title>
- <style>
-:root {
-  --bg-main: #f6f3ec;
-  --card-bg: #ffffff;
-  --border-color: #eae5d8;
-  --border-strong: #d8d2c2;
-  --text-primary: #1f2937;
-  --text-muted: #8a8f98;
-  --input-bg: #ffffff;
-  --panel-item-border: #f0ede4;
-  --accent: #0d9488;
-  --accent-solid: #0f766e;
-}
-
-[data-theme="dark"] {
-  --bg-main: #14161c;
-  --card-bg: #1f222b;
-  --border-color: #2c2f3a;
-  --border-strong: #383c4a;
-  --text-primary: #e5e7eb;
-  --text-muted: #9aa0ad;
-  --input-bg: #262a35;
-  --panel-item-border: #2c2f3a;
-  --accent: #2dd4bf;
-}
-
-  * { box-sizing: border-box; }
-
-  body {
-    margin: 0;
-    font-family: "Nunito", -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg-main);
-    color: var(--text-primary);
-    transition: background 0.2s ease, color 0.2s ease;
-  }
-
-  #authBox {
-    max-width: 380px;
-    margin: 80px auto;
-    background: var(--card-bg);
-    padding: 36px;
-    border-radius: 14px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 30px rgba(18, 35, 61, 0.1);
-  }
-
-  #authBox h2 { margin-top: 0; color: #12233d; }
-  [data-theme="dark"] #authBox h2 { color: var(--text-primary); }
-
-  #authBox input {
-    width: 100%;
-    padding: 11px 14px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border-strong);
-    border-radius: 8px;
-    font-size: 14px;
-    background: var(--input-bg);
-    color: var(--text-primary);
-  }
-
-  #authBox input:focus {
-  outline: none;
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
-}
-
-  #authSubmitBtn {
-    width: 100%;
-    padding: 11px;
-    background: #12233d;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s ease;
-  }
-
-  #authSubmitBtn:hover { background: #1c3a63; }
-
-  .appLayout { display: flex; min-height: 100vh; }
-
-  .sidebar {
-    width: 230px;
-    flex-shrink: 0;
-    background: linear-gradient(180deg, #12233d 0%, #16294a 100%);
-    color: #f2efe6;
-    padding: 28px 0 20px;
-    display: flex;
-    flex-direction: column;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-  }
-
-  .sidebar-title { padding: 0 22px 22px; border-bottom: 1px solid rgba(255,255,255,0.14); margin-bottom: 14px; }
-  .sidebar-title p { margin: 0; font-size: 12.5px; color: #b9c3d4; }
-
-  #sidebarNav { display: flex; flex-direction: column; gap: 2px; padding: 0 12px; }
-
-  .level-btn {
-    text-align: left;
-    background: none;
-    border: none;
-    color: #dfe6ef;
-    font-size: 14px;
-    padding: 11px 14px;
-    cursor: pointer;
-    border-radius: 8px;
-    font-family: inherit;
-    transition: background 0.15s ease;
-  }
-
-  .level-btn:hover { background: rgba(255,255,255,0.08); }
-
-  .level-btn.active {
-    background: rgba(255,255,255,0.12);
-    color: #fff;
-    font-weight: 600;
-  }
-
-  .fav-btn { margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.14); padding-top: 14px; }
-
-  #themeToggleBtn {
-    margin: 14px 22px 0;
-    background: rgba(255,255,255,0.1);
-    color: #f2efe6;
-    border: 1px solid rgba(255,255,255,0.25);
-    padding: 8px 0;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  #themeToggleBtn:hover { background: rgba(255,255,255,0.2); }
-
-  #logoutBtn {
-    margin: auto 22px 0;
-    background: rgba(255,255,255,0.1);
-    color: #f2efe6;
-    border: 1px solid rgba(255,255,255,0.25);
-    padding: 9px 0;
-    border-radius: 8px;
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  #logoutBtn:hover { background: rgba(255,255,255,0.2); }
-
-  #accountMenu { display: flex; flex-direction: column; margin-top: auto; }
-
-  .contentWrapper {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    gap: 24px;
-    padding: 32px 36px 60px;
-    max-width: 1400px;
-  }
-
-  .mainArea { flex: 1; min-width: 0; }
-
-  .rightPanel {
-    width: 280px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .panelBox {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 16px;
-    padding: 18px 20px;
-    box-shadow: 0 4px 14px rgba(18, 35, 61, 0.07);
-  }
-
-  .panelBox h4 { margin: 0 0 10px; font-size: 13.5px; color: var(--text-primary); }
-
-  .panelItem {
-    font-size: 13px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--panel-item-border);
-    cursor: pointer;
-    color: var(--text-primary);
-  }
-
-  .panelItem:last-child { border-bottom: none; }
-.panelItem:hover { color: var(--accent); }
-
-  .panelBox .emptyNote { font-size: 12.5px; color: var(--text-muted); margin: 0; }
-
-  .panelBox input, .panelBox textarea {
-    background: var(--input-bg);
-    color: var(--text-primary);
-    border-color: var(--border-strong) !important;
-  }
-
-  .mainHeader { margin-bottom: 20px; }
-
-  .statsRow { display: flex; gap: 12px; flex-wrap: wrap; }
-
-  .statCard {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 14px 20px;
-    box-shadow: 0 4px 12px rgba(18,35,61,0.06);
-    min-width: 130px;
-  }
-
-  .statCard .statNum { font-size: 20px; font-weight: 700; color: var(--text-primary); }
-  .statCard .statLabel { font-size: 12px; color: var(--text-muted); }
-
-  .toolbar { margin: 22px 0 18px; }
-
-  #searchInput {
-    padding: 10px 16px;
-    border: 1px solid var(--border-strong);
-    border-radius: 20px;
-    font-size: 13.5px;
-    font-family: inherit;
-    width: 100%;
-    max-width: 360px;
-    background: var(--input-bg);
-    color: var(--text-primary);
-  }
-
-  #courseList {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-  }
-
-  .courseCard {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-border-top: 5px solid var(--level-color, var(--accent));
-    border-radius: 16px;
-    padding: 20px 22px;
-    box-shadow: 0 4px 14px rgba(18,35,61,0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    animation: fadeSlideIn 0.3s ease both;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .courseCard::before {
-    content: "";
-    position: absolute;
-    top: -20px;
-    right: -20px;
-    width: 70px;
-    height: 70px;
-background: var(--level-color, var(--accent));
-    opacity: 0.08;
-    border-radius: 50%;
-  }
-
-  .courseCard:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(18,35,61,0.12); }
-  .courseCard h3 { margin: 0; font-size: 16px; color: var(--text-primary); }
-  .courseCard .courseMeta { color: var(--text-muted); font-size: 12.5px; margin: 0; }
- .courseCard .courseHint { color: var(--accent); font-size: 12.5px; margin: 6px 0 0; }
-
-.sessionTag {
-  display: inline-block;
-  background: rgba(13, 148, 136, 0.12);
-  color: var(--accent);
-  font-size: 10.5px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 10px;
-  margin-left: 6px;
-  vertical-align: middle;
-}
-
-.newBadge {
-    background: var(--accent-solid);
-    color: #ffffff;
-    font-size: 10.5px;
-    font-weight: 600;
-    padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle;
-  }
-
-.starIcon {
-  font-size: 24px;
-  cursor: pointer;
-  padding: 6px;
-  margin: -6px -6px 0 0;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  color: var(--text-muted);
-  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
-}
-.starIcon.active { color: var(--accent); }
-.starIcon:hover { transform: scale(1.15); background: rgba(13, 148, 136, 0.12); }
-.starIcon:active { transform: scale(0.9); }
-
-  @keyframes fadeSlideIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  #courseModal {
-    display: none; position: fixed; inset: 0; background: rgba(18,35,61,0.6);
-    z-index: 100; align-items: center; justify-content: center; padding: 20px;
-  }
-
-  #courseModal > div {
-    background: var(--card-bg); max-width: 600px; width: 100%; max-height: 80vh;
-    overflow-y: auto; border-radius: 14px; padding: 30px;
-  }
-
-  #modalContent h2 { color: var(--text-primary); }
-  #modalContent h4 { color: var(--text-primary); margin-bottom: 6px; }
-  #modalContent p { color: var(--text-primary); }
-#modalContent a { color: var(--accent); font-weight: 500; }
-
-  @media (max-width: 720px) {
-    .appLayout { flex-direction: column; }
-    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; padding: 14px 16px; overflow-x: auto; overflow-y: visible; }
-    .sidebar-title { display: none; }
-    #sidebarNav { flex-direction: row; padding: 0; }
-    .mainArea { padding: 22px 18px 50px; }
-    .contentWrapper { flex-direction: column; }
-    .rightPanel { width: 100%; }
-
-    #mobileMenuBtn { display: block; margin-left: auto; }
-
-    #accountMenu {
-      display: none;
-      position: absolute;
-      top: 60px;
-      right: 16px;
-      background: #12233d;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
-      padding: 10px;
-      width: 200px;
-      z-index: 50;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engineering Study Hub</title>
+  <style>
+    :root {
+      --bg-main: #f6f3ec;
+      --card-bg: #ffffff;
+      --border-color: #eae5d8;
+      --border-strong: #d8d2c2;
+      --text-primary: #1f2937;
+      --text-muted: #8a8f98;
+      --input-bg: #ffffff;
+      --panel-item-border: #f0ede4;
+      --accent: #0d9488;
+      --accent-solid: #0f766e;
     }
 
-    #accountMenu.open { display: flex; }
+    [data-theme="dark"] {
+      --bg-main: #14161c;
+      --card-bg: #1f222b;
+      --border-color: #2c2f3a;
+      --border-strong: #383c4a;
+      --text-primary: #e5e7eb;
+      --text-muted: #9aa0ad;
+      --input-bg: #262a35;
+      --panel-item-border: #2c2f3a;
+      --accent: #2dd4bf;
+    }
 
-    #accountMenu button { margin: 4px 0 !important; }
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  .logoRow { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+    body {
+      margin: 0;
+      font-family: "Nunito", -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg-main);
+      color: var(--text-primary);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
 
-  .logoMark {
-    background: rgba(255, 255, 255, 0.12);
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
+    #authBox {
+      max-width: 380px;
+      margin: 80px auto;
+      background: var(--card-bg);
+      padding: 36px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px rgba(18, 35, 61, 0.1);
+    }
 
-  .sidebar-title h1 {
-    font-family: "Fredoka", sans-serif;
-    font-weight: 600;
-    font-size: 16px !important;
-    line-height: 1.25 !important;
-    margin: 0 !important;
-  }
+    #authBox h2 {
+      margin-top: 0;
+      color: #12233d;
+    }
 
-  .welcomeBanner {
-    background: linear-gradient(135deg, #12233d 0%, #1c3a63 100%);
-    border-radius: 16px;
-    padding: 26px 30px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-    box-shadow: 0 8px 24px rgba(18, 35, 61, 0.18);
-  }
+    [data-theme="dark"] #authBox h2 {
+      color: var(--text-primary);
+    }
 
-  .welcomeBanner #welcomeMsg { color: white; margin: 0 0 4px; font-size: 21px; font-family: "Fredoka", sans-serif; font-weight: 600; }
-  .bannerSub { color: #b9c3d4; font-size: 13px; margin: 0; }
+    #authBox input {
+      width: 100%;
+      padding: 11px 14px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 8px;
+      font-size: 14px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+    }
 
-  .bannerIllustration {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    #authBox input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+    }
+
+    #authSubmitBtn {
+      width: 100%;
+      padding: 11px;
+      background: #12233d;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    #authSubmitBtn:hover {
+      background: #1c3a63;
+    }
+
+    .appLayout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 230px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #12233d 0%, #16294a 100%);
+      color: #f2efe6;
+      padding: 28px 0 20px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: calc(100vh - 20px);
+      margin-bottom: 20px;
+      border-radius: 0 16px 16px 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      padding: 0 22px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      margin-bottom: 14px;
+    }
+
+    .sidebar-title p {
+      margin: 0;
+      font-size: 12.5px;
+      color: #b9c3d4;
+    }
+
+    #sidebarNav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 0 12px;
+    }
+
+    .level-btn {
+      text-align: left;
+      background: none;
+      border: none;
+      color: #dfe6ef;
+      font-size: 14px;
+      padding: 11px 14px;
+      cursor: pointer;
+      border-radius: 8px;
+      font-family: inherit;
+      transition: background 0.15s ease;
+    }
+
+    .level-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .level-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .fav-btn {
+      margin-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      padding-top: 14px;
+    }
+
+    #themeToggleBtn {
+      margin: 14px 22px 0;
+      background: rgba(255, 255, 255, 0.1);
+      color: #f2efe6;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 8px 0;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    #themeToggleBtn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    #logoutBtn {
+      margin: auto 22px 0;
+      background: rgba(255, 255, 255, 0.1);
+      color: #f2efe6;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 9px 0;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    #logoutBtn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    #accountMenu {
+      display: flex;
+      flex-direction: column;
+      margin-top: auto;
+    }
+
+    .contentWrapper {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      gap: 24px;
+      padding: 32px 36px 20px;
+      max-width: 1400px;
+      height: calc(100vh - 20px);
+    }
+
+    .mainArea {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .rightPanel {
+      width: 280px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      height: calc(100vh - 52px);
+      margin-bottom: 20px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .panelBox {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: 0 4px 14px rgba(18, 35, 61, 0.07);
+    }
+
+    .panelBox h4 {
+      margin: 0 0 10px;
+      font-size: 13.5px;
+      color: var(--text-primary);
+    }
+
+    .panelItem {
+      font-size: 13px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--panel-item-border);
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .panelItem:last-child {
+      border-bottom: none;
+    }
+
+    .panelItem:hover {
+      color: var(--accent);
+    }
+
+    .panelBox .emptyNote {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    .panelBox input,
+    .panelBox textarea {
+      background: var(--input-bg);
+      color: var(--text-primary);
+      border-color: var(--border-strong) !important;
+    }
+
+    .mainHeader {
+      margin-bottom: 20px;
+    }
+
+    .statsRow {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .statCard {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px 20px;
+      box-shadow: 0 4px 12px rgba(18, 35, 61, 0.06);
+      min-width: 130px;
+    }
+
+    .statCard .statNum {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .statCard .statLabel {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .toolbar {
+      margin: 22px 0 18px;
+    }
+
+    #searchInput {
+      padding: 10px 16px;
+      border: 1px solid var(--border-strong);
+      border-radius: 20px;
+      font-size: 13.5px;
+      font-family: inherit;
+      width: 100%;
+      max-width: 360px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+    }
+
+    #courseList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      align-content: start;
+      gap: 16px;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 4px;
+      padding-bottom: 4px;
+    }
+
+    .courseCard {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-top: 5px solid var(--level-color, var(--accent));
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 0 4px 14px rgba(18, 35, 61, 0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      animation: fadeSlideIn 0.3s ease both;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .courseCard::before {
+      content: "";
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 70px;
+      height: 70px;
+      background: var(--level-color, var(--accent));
+      opacity: 0.08;
+      border-radius: 50%;
+    }
+
+    .courseCard:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 24px rgba(18, 35, 61, 0.12);
+    }
+
+    .courseCard h3 {
+      margin: 0;
+      font-size: 16px;
+      color: var(--text-primary);
+    }
+
+    .courseCard .courseMeta {
+      color: var(--text-muted);
+      font-size: 12.5px;
+      margin: 0;
+    }
+
+    .courseCard .courseHint {
+      color: var(--accent);
+      font-size: 12.5px;
+      margin: 6px 0 0;
+    }
+
+    .sessionTag {
+      display: inline-block;
+      background: rgba(13, 148, 136, 0.12);
+      color: var(--accent);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .newBadge {
+      background: var(--accent-solid);
+      color: #ffffff;
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .starIcon {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 6px;
+      margin: -6px -6px 0 0;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      color: var(--text-muted);
+      transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease;
+    }
+
+    .starIcon.active {
+      color: var(--accent);
+    }
+
+    .starIcon:hover {
+      transform: scale(1.15);
+      background: rgba(13, 148, 136, 0.12);
+    }
+
+    .starIcon:active {
+      transform: scale(0.9);
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #courseDetailView {
+      display: none;
+      flex-direction: column;
+      min-height: 0;
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      animation: fadeSlideIn 0.25s ease both;
+    }
+
+    #backToCoursesBtn {
+      align-self: flex-start;
+      background: none;
+      border: 1px solid var(--border-strong);
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 7px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-bottom: 18px;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+
+    #backToCoursesBtn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    #courseDetailContent {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 30px 34px;
+      box-shadow: 0 4px 14px rgba(18, 35, 61, 0.08);
+    }
+
+    #courseDetailContent h2 {
+      margin-top: 0;
+      color: var(--text-primary);
+    }
+
+    #courseDetailContent h4 {
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    #courseDetailContent p {
+      color: var(--text-primary);
+    }
+
+    #courseDetailContent a {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    @media (max-width: 720px) {
+      .appLayout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        top: auto;
+        margin-bottom: 0;
+        border-radius: 0;
+        flex-direction: row;
+        align-items: center;
+        padding: 14px 16px;
+        overflow-x: auto;
+        overflow-y: visible;
+      }
+
+      .sidebar-title {
+        display: none;
+      }
+
+      #sidebarNav {
+        flex-direction: row;
+        padding: 0;
+      }
+
+      .mainArea {
+        padding: 22px 18px 50px;
+      }
+
+      .rightPanel {
+        width: 100%;
+        position: static;
+        height: auto;
+        margin-bottom: 0;
+        overflow-y: visible;
+        padding-right: 0;
+      }
+
+      #mobileMenuBtn {
+        display: block;
+        margin-left: auto;
+      }
+
+      #accountMenu {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 16px;
+        background: #12233d;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 10px;
+        width: 200px;
+        z-index: 50;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      }
+
+      #accountMenu.open {
+        display: flex;
+      }
+
+      #accountMenu button {
+        margin: 4px 0 !important;
+      }
+
+      .contentWrapper {
+        flex-direction: column;
+        height: auto;
+        padding: 20px 16px 40px;
+        gap: 18px;
+      }
+
+      .mainArea {
+        min-height: 0;
+      }
+
+      #courseList {
+        flex: none;
+        overflow-y: visible;
+        padding-right: 0;
+      }
+
+      .welcomeBanner {
+        padding: 20px 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .welcomeBanner #welcomeMsg {
+        font-size: 18px;
+      }
+
+      .bannerIllustration img {
+        height: 60px !important;
+      }
+
+      .statsRow {
+        gap: 8px;
+      }
+
+      .statCard {
+        min-width: 0;
+        flex: 1 1 calc(50% - 8px);
+        padding: 12px 14px;
+      }
+
+      #courseList {
+        grid-template-columns: 1fr;
+      }
+
+      #authBox {
+        margin: 40px 16px;
+        padding: 26px 22px;
+      }
+
+      #onboardingScreen {
+        margin: 40px 16px !important;
+        padding: 26px 22px !important;
+        max-width: none !important;
+      }
+
+      #donationCard,
+      #settingsModal>div {
+        width: 92% !important;
+        padding: 20px !important;
+        max-height: 85vh !important;
+      }
+
+      #courseDetailContent {
+        padding: 20px !important;
+      }
+
+      #authBox input,
+      #onboardingScreen input,
+      .panelBox input,
+      .panelBox textarea,
+      #searchInput,
+      #donationCard input,
+      #settingsModal input,
+      #settingsModal select {
+        font-size: 16px;
+      }
+
+      #appFooter {
+        padding: 14px 16px 20px;
+      }
+    }
+
+    .logoRow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .logoMark {
+      background: rgba(255, 255, 255, 0.12);
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-title h1 {
+      font-family: "Fredoka", sans-serif;
+      font-weight: 600;
+      font-size: 16px !important;
+      line-height: 1.25 !important;
+      margin: 0 !important;
+    }
+
+    .welcomeBanner {
+      background: linear-gradient(135deg, #12233d 0%, #1c3a63 100%);
+      border-radius: 16px;
+      padding: 26px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 24px rgba(18, 35, 61, 0.18);
+    }
+
+    .welcomeBanner #welcomeMsg {
+      color: white;
+      margin: 0 0 4px;
+      font-size: 21px;
+      font-family: "Fredoka", sans-serif;
+      font-weight: 600;
+    }
+
+    .bannerSub {
+      color: #b9c3d4;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .bannerIllustration {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     #mobileMenuBtn {
-    display: none;
-    background: rgba(255,255,255,0.1);
-    color: #f2efe6;
-    border: 1px solid rgba(255,255,255,0.25);
-    width: 38px;
-    height: 38px;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
+      display: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #f2efe6;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
 
     .sidebarLogo {
-    max-width: 100%;
-    height: auto;
-    display: block;
-  }
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
 
     .onboardBtn {
-    padding: 14px;
-    border: 1px solid var(--border-strong);
-    border-radius: 10px;
-    background: var(--input-bg);
-    color: var(--text-primary);
-    font-size: 14.5px;
-    font-family: inherit;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
+      padding: 14px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      font-size: 14.5px;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
 
-.onboardBtn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  }
+    .onboardBtn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
 
-  #appFooter {
-    text-align: center;
-    padding: 16px 20px 24px;
-    color: var(--text-muted);
-    font-size: 12px;
-  }
-</style>
+    #appFooter {
+      text-align: center;
+      padding: 16px 20px 24px;
+      color: var(--text-muted);
+      font-size: 12px;
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="authBox">
+  <div id="authBox">
     <h2 id="authTitle">Student Login</h2>
     <input type="email" id="authEmail" placeholder="Email" autocomplete="off">
     <input type="password" id="authPassword" placeholder="Password" autocomplete="new-password">
@@ -457,16 +768,18 @@ background: var(--level-color, var(--accent));
     <p id="authError" style="color:#c0392b; font-size:13px; margin-top:8px;"></p>
     <p style="font-size:13px; margin-top:16px; text-align:center;">
       <span id="authToggleText">Don't have an account?</span>
-<a href="#" id="authToggleLink" style="color:#0d9488;">Sign up</a>
+      <a href="#" id="authToggleLink" style="color:#0d9488;">Sign up</a>
     </p>
     <p style="font-size:12.5px; text-align:center; margin-top:6px;">
       <a href="#" id="forgotPasswordLink" style="color:var(--text-muted);">Forgot password?</a>
     </p>
   </div>
 
-    <div id="onboardingScreen" style="display:none; max-width:480px; margin:80px auto; background:var(--card-bg); padding:36px; border-radius:14px; border:1px solid var(--border-color); box-shadow:0 10px 30px rgba(18,35,61,0.1); text-align:center;">
+  <div id="onboardingScreen"
+    style="display:none; max-width:480px; margin:80px auto; background:var(--card-bg); padding:36px; border-radius:14px; border:1px solid var(--border-color); box-shadow:0 10px 30px rgba(18,35,61,0.1); text-align:center;">
     <h2 id="onboardingTitle" style="margin-top:0; color:var(--text-primary);">Choose your department</h2>
-    <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:20px;">This can't be changed later, so choose carefully.</p>
+    <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:20px;">This can't be changed later, so choose
+      carefully.</p>
 
     <div id="departmentChoices" style="display:flex; flex-direction:column; gap:10px;">
       <button class="onboardBtn" data-dept="Computer Engineering">Computer Engineering</button>
@@ -482,1136 +795,1308 @@ background: var(--level-color, var(--accent));
     </div>
 
     <div id="onboardingConfirm" style="display:none;">
-      <p style="color:var(--text-primary); margin-bottom:16px;">You've selected: <strong id="onboardingSummary"></strong></p>
-      <button id="confirmOnboardBtn" style="width:100%; padding:12px; background:#12233d; color:white; border:none; border-radius:8px; font-size:14px; cursor:pointer; margin-bottom:10px;">Confirm & Continue</button>
-      <button id="backOnboardBtn" style="width:100%; padding:10px; background:none; border:1px solid var(--border-strong); color:var(--text-muted); border-radius:8px; font-size:13px; cursor:pointer;">Go Back</button>
+      <p style="color:var(--text-primary); margin-bottom:16px;">You've selected: <strong
+          id="onboardingSummary"></strong></p>
+      <button id="confirmOnboardBtn"
+        style="width:100%; padding:12px; background:#12233d; color:white; border:none; border-radius:8px; font-size:14px; cursor:pointer; margin-bottom:10px;">Confirm
+        & Continue</button>
+      <button id="backOnboardBtn"
+        style="width:100%; padding:10px; background:none; border:1px solid var(--border-strong); color:var(--text-muted); border-radius:8px; font-size:13px; cursor:pointer;">Go
+        Back</button>
     </div>
   </div>
 
   <div id="appContent" style="display:none;">
-  <div class="appLayout">
+    <div class="appLayout">
 
-    <aside class="sidebar">
-      <div class="sidebar-title">
-        <img src="logo.png" alt="Engineering Study Hub" class="sidebarLogo">
-      </div>
-<nav id="sidebarNav">
-  <button data-view="courses" class="level-btn active">📚 My Courses</button>
-  <button data-view="FAVORITES" class="level-btn fav-btn">★ My Favorites</button>
-</nav>
-<p id="deptLevelLabel" style="padding:0 22px; font-size:12px; color:#b9c3d4; margin-top:8px;"></p>
-<button id="mobileMenuBtn">☰</button>
-<div id="accountMenu">
-  <button id="openDonationBtn" style="margin:14px 22px 0; background:rgba(255,255,255,0.1); color:#f2efe6; border:1px solid rgba(255,255,255,0.25); padding:8px 0; border-radius:8px; font-size:13px; cursor:pointer;">💝 Support Us</button>
-  <button id="themeToggleBtn" style="margin:8px 22px 0;">🌙 Dark Mode</button>
-  <button id="settingsBtn" style="margin:8px 22px 0; background:rgba(255,255,255,0.1); color:#f2efe6; border:1px solid rgba(255,255,255,0.25); padding:8px 0; border-radius:8px; font-size:13px; cursor:pointer;">⚙️ Account Settings</button>
-  <button id="logoutBtn">Log Out</button>
-</div>
-    </aside>
-
-    <div class="contentWrapper">
-      <div class="mainArea">
-      <div class="welcomeBanner">
-        <div>
-          <p id="welcomeMsg">Hello</p>
-          <p class="bannerSub">Your course materials and trial Q&amp;A, all in one place.</p>
+      <aside class="sidebar">
+        <div class="sidebar-title">
+          <img src="logo.png" alt="Engineering Study Hub" class="sidebarLogo">
         </div>
-        <div class="bannerIllustration">
-          <img src="banner-illustration.png" alt="" style="height:90px; width:auto; filter:brightness(0) invert(1);">
+        <nav id="sidebarNav">
+          <button data-view="courses" class="level-btn active">📚 My Courses</button>
+          <button data-view="FAVORITES" class="level-btn fav-btn">★ My Favorites</button>
+        </nav>
+        <p id="deptLevelLabel" style="padding:0 22px; font-size:12px; color:#b9c3d4; margin-top:8px;"></p>
+        <button id="mobileMenuBtn">☰</button>
+        <div id="accountMenu">
+          <button id="openDonationBtn"
+            style="margin:14px 22px 0; background:rgba(255,255,255,0.1); color:#f2efe6; border:1px solid rgba(255,255,255,0.25); padding:8px 0; border-radius:8px; font-size:13px; cursor:pointer;">💝
+            Support Us</button>
+          <button id="themeToggleBtn" style="margin:8px 22px 0;">🌙 Dark Mode</button>
+          <button id="settingsBtn"
+            style="margin:8px 22px 0; background:rgba(255,255,255,0.1); color:#f2efe6; border:1px solid rgba(255,255,255,0.25); padding:8px 0; border-radius:8px; font-size:13px; cursor:pointer;">⚙️
+            Account Settings</button>
+          <button id="logoutBtn">Log Out</button>
         </div>
-      </div>
-      <div class="statsRow" id="statsRow"></div>
-
-        <div class="toolbar">
-          <input type="text" id="searchInput" placeholder="Search by course code or title...">
-        </div>
-
-<main id="courseList"></main>
-
-<div id="viewMoreWrap" style="display:none; text-align:center; margin-top:22px;">
-  <button id="viewMoreBtn" style="padding:10px 30px; background:#12233d; color:white; border:none; border-radius:20px; font-size:13.5px; font-weight:600; cursor:pointer;">View More</button>
-</div>
-</div>
-
-      <aside class="rightPanel">
-        <div class="panelBox">
-          <h4>🆕 Recently Added</h4>
-          <div id="recentAddedList"></div>
-        </div>
-
-        <div class="panelBox">
-          <h4>👁️ Recently Viewed</h4>
-          <div id="recentViewedList"></div>
-        </div>
-
-        <div class="panelBox">
-<h4>📢 Announcements</h4>
-<div id="announcementsList" style="height:170px; overflow-y:auto; overflow-x:hidden; scroll-behavior:smooth;"></div>
-        </div>
-
-        <div class="panelBox">
-          <h4>📅 Study Planner</h4>
-          <input type="date" id="planDateInput" style="width:100%; padding:8px; border:1px solid #d8d2c2; border-radius:6px; font-size:12.5px; margin-bottom:6px;">
-          <input type="text" id="planNoteInput" placeholder="What to study..." style="width:100%; padding:8px; border:1px solid #d8d2c2; border-radius:6px; font-size:12.5px; margin-bottom:6px;">
-          <button id="addPlanBtn" style="width:100%; padding:7px; background:#12233d; color:white; border:none; border-radius:6px; font-size:12.5px; cursor:pointer; margin-bottom:10px;">+ Add Plan</button>
-          <div id="studyPlanList"></div>
-        </div>
-
-<div class="panelBox">
-  <h4>💬 Feedback & Requests <span id="feedbackNewBadge" class="newBadge" style="display:none;">New</span></h4>
-  <div id="feedbackThread" style="height:180px; overflow-y:auto; overflow-x:hidden; margin-bottom:8px; display:flex; flex-direction:column; scroll-behavior:smooth;"></div>
-  <input type="text" id="feedbackInput" placeholder="Type a message..." style="width:100%; padding:8px; border:1px solid #d8d2c2; border-radius:6px; font-size:12.5px; margin-bottom:6px; box-sizing:border-box;">
-  <button id="sendFeedbackBtn" style="width:100%; padding:7px; background:#12233d; color:white; border:none; border-radius:6px; font-size:12.5px; cursor:pointer;">Send</button>
-</div>
       </aside>
-    </div>
 
+      <div class="contentWrapper">
+        <div class="mainArea">
+          <div class="welcomeBanner">
+            <div>
+              <p id="welcomeMsg">Hello</p>
+              <p class="bannerSub">Your course materials and trial Q&amp;A, all in one place.</p>
+            </div>
+            <div class="bannerIllustration">
+              <img src="banner-illustration.png" alt=""
+                style="height:90px; width:auto; filter:brightness(0) invert(1);">
+            </div>
+          </div>
+          <div class="statsRow" id="statsRow"></div>
+
+          <div class="toolbar">
+            <input type="text" id="searchInput" placeholder="Search by course code or title...">
+          </div>
+
+          <main id="courseList"></main>
+
+          <div id="courseDetailView">
+            <button id="backToCoursesBtn">← Back to courses</button>
+            <div id="courseDetailContent"></div>
+          </div>
+        </div>
+
+        <aside class="rightPanel">
+          <div class="panelBox">
+            <h4>🆕 Recently Added</h4>
+            <div id="recentAddedList"></div>
+          </div>
+
+          <div class="panelBox">
+            <h4>👁️ Recently Viewed</h4>
+            <div id="recentViewedList"></div>
+          </div>
+
+          <div class="panelBox">
+            <h4>📢 Announcements</h4>
+            <div id="announcementsList"
+              style="height:170px; overflow-y:auto; overflow-x:hidden; scroll-behavior:smooth;"></div>
+          </div>
+
+          <div class="panelBox">
+            <h4>📅 Study Planner</h4>
+            <input type="date" id="planDateInput"
+              style="width:100%; padding:8px; border:1px solid #d8d2c2; border-radius:6px; font-size:12.5px; margin-bottom:6px;">
+            <input type="text" id="planNoteInput" placeholder="What to study..."
+              style="width:100%; padding:8px; border:1px solid #d8d2c2; border-radius:6px; font-size:12.5px; margin-bottom:6px;">
+            <button id="addPlanBtn"
+              style="width:100%; padding:7px; background:#12233d; color:white; border:none; border-radius:6px; font-size:12.5px; cursor:pointer; margin-bottom:10px;">+
+              Add Plan</button>
+            <div id="studyPlanList"></div>
+          </div>
+
+          <div class="panelBox">
+            <h4>💬 Feedback & Requests <span id="feedbackNewBadge" class="newBadge" style="display:none;">New</span>
+            </h4>
+            <div id="feedbackThread"
+              style="height:180px; overflow-y:auto; overflow-x:hidden; margin-bottom:8px; display:flex; flex-direction:column; scroll-behavior:smooth;">
+            </div>
+            <input type="text" id="feedbackInput" placeholder="Type a message..."
+              style="width:100%; padding:8px; border:1px solid #d8d2c2; border-radius:6px; font-size:12.5px; margin-bottom:6px; box-sizing:border-box;">
+            <button id="sendFeedbackBtn"
+              style="width:100%; padding:7px; background:#12233d; color:white; border:none; border-radius:6px; font-size:12.5px; cursor:pointer;">Send</button>
+          </div>
+        </aside>
+      </div>
+
+    </div>
   </div>
-</div>
 
   <footer id="appFooter">
     © <span id="footerYear"></span> Engineering Study Hub. All rights reserved.
   </footer>
 
-  <div id="donationModal" style="display:none; position:fixed; inset:0; background:rgba(18,35,61,0.75); z-index:200; align-items:center; justify-content:center; padding:20px;">
-    <div id="donationCard" style="background:var(--card-bg); max-width:460px; width:100%; max-height:85vh; overflow-y:auto; border-radius:16px; padding:32px;">
+  <div id="donationModal"
+    style="display:none; position:fixed; inset:0; background:rgba(18,35,61,0.75); z-index:200; align-items:center; justify-content:center; padding:20px;">
+    <div id="donationCard"
+      style="background:var(--card-bg); max-width:460px; width:100%; max-height:85vh; overflow-y:auto; border-radius:16px; padding:32px;">
 
       <div id="donationFormView">
         <h2 style="margin-top:0; color:var(--text-primary);">Donation Form</h2>
-        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Optional — supports the admin who maintains this app for you.</p>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Optional — supports the admin who
+          maintains this app for you.</p>
 
         <div style="display:flex; gap:10px; margin-bottom:10px;">
-          <input type="text" id="donorFirstName" placeholder="First name" style="flex:1; padding:10px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
-          <input type="text" id="donorLastName" placeholder="Last name" style="flex:1; padding:10px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+          <input type="text" id="donorFirstName" placeholder="First name"
+            style="flex:1; padding:10px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+          <input type="text" id="donorLastName" placeholder="Last name"
+            style="flex:1; padding:10px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
         </div>
 
-        <input type="email" id="donorEmail" placeholder="Email (optional)" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+        <input type="email" id="donorEmail" placeholder="Email (optional)"
+          style="width:100%; padding:10px; margin-bottom:10px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
 
-        <input type="number" id="donorAmount" placeholder="Amount (₦)" min="50" step="0.01" style="width:100%; padding:10px; margin-bottom:16px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+        <input type="number" id="donorAmount" placeholder="Amount (₦)" min="50" step="0.01"
+          style="width:100%; padding:10px; margin-bottom:16px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
 
-        <div style="background:var(--input-bg); border:1px solid var(--border-strong); border-radius:10px; padding:14px; margin-bottom:16px; font-size:13.5px; color:var(--text-primary);">
+        <div
+          style="background:var(--input-bg); border:1px solid var(--border-strong); border-radius:10px; padding:14px; margin-bottom:16px; font-size:13.5px; color:var(--text-primary);">
           <strong>Send to:</strong>
           <div id="donationBankDetails">Loading account details...</div>
         </div>
 
-        <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:6px;">Upload transfer receipt (required)</label>
-        <input type="file" id="donationReceiptFile" accept=".jpg,.jpeg,.png,.pdf" style="width:100%; margin-bottom:16px;">
+        <label style="font-size:13px; color:var(--text-muted); display:block; margin-bottom:6px;">Upload transfer
+          receipt (required)</label>
+        <input type="file" id="donationReceiptFile" accept=".jpg,.jpeg,.png,.pdf"
+          style="width:100%; margin-bottom:16px;">
 
-        <button id="submitDonationBtn" style="width:100%; padding:12px; background:#12233d; color:white; border:none; border-radius:8px; font-size:14px; cursor:pointer;">Done</button>
+        <button id="submitDonationBtn"
+          style="width:100%; padding:12px; background:#12233d; color:white; border:none; border-radius:8px; font-size:14px; cursor:pointer;">Done</button>
         <p id="donationFormMsg" style="font-size:12.5px; color:#c0392b; margin-top:8px;"></p>
 
-        <button id="closeDonationBtn" style="width:100%; padding:8px; background:none; border:none; color:var(--text-muted); font-size:13px; cursor:pointer; margin-top:10px;">Cancel</button>
+        <button id="closeDonationBtn"
+          style="width:100%; padding:8px; background:none; border:none; color:var(--text-muted); font-size:13px; cursor:pointer; margin-top:10px;">Cancel</button>
       </div>
 
       <div id="donationThanksView" style="display:none; text-align:center; padding:20px 0;">
         <div style="font-size:44px; margin-bottom:10px;">🙏</div>
         <h2 style="color:var(--text-primary); margin-bottom:8px;">Thank you!</h2>
-        <p style="color:var(--text-muted); font-size:14px;">Your support means a lot and helps keep this app running for everyone.</p>
+        <p style="color:var(--text-muted); font-size:14px;">Your support means a lot and helps keep this app running for
+          everyone.</p>
         <p style="color:var(--text-muted); font-size:12px; margin-top:20px;">Tap anywhere to continue</p>
       </div>
     </div>
   </div>
-  <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(18,35,61,0.6); z-index:100; align-items:center; justify-content:center; padding:20px;">
+  <div id="settingsModal"
+    style="display:none; position:fixed; inset:0; background:rgba(18,35,61,0.6); z-index:100; align-items:center; justify-content:center; padding:20px;">
     <div style="background:var(--card-bg); max-width:420px; width:100%; border-radius:14px; padding:28px;">
-      <button id="closeSettingsBtn" style="float:right; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-primary);">✕</button>
+      <button id="closeSettingsBtn"
+        style="float:right; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-primary);">✕</button>
       <h2 style="margin-top:0; color:var(--text-primary);">Account Settings</h2>
 
       <h4 style="margin-bottom:6px; color:var(--text-primary);">Change Password</h4>
-      <input type="password" id="currentPasswordInput" placeholder="Current password" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
-      <input type="password" id="newPasswordInput" placeholder="New password" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
-      <button id="changePasswordBtn" style="width:100%; padding:10px; background:#12233d; color:white; border:none; border-radius:8px; cursor:pointer; margin-bottom:8px;">Update Password</button>
+      <input type="password" id="currentPasswordInput" placeholder="Current password"
+        style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+      <input type="password" id="newPasswordInput" placeholder="New password"
+        style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+      <button id="changePasswordBtn"
+        style="width:100%; padding:10px; background:#12233d; color:white; border:none; border-radius:8px; cursor:pointer; margin-bottom:8px;">Update
+        Password</button>
       <p id="passwordChangeMsg" style="font-size:12.5px; margin:0 0 20px;"></p>
 
       <h4 style="margin-bottom:6px; color:var(--text-primary);">Change Email</h4>
-      <input type="password" id="currentPasswordForEmail" placeholder="Current password" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
-      <input type="email" id="newEmailInput" placeholder="New email" style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
-      <button id="changeEmailBtn" style="width:100%; padding:10px; background:#12233d; color:white; border:none; border-radius:8px; cursor:pointer; margin-bottom:8px;">Update Email</button>
-      <p id="emailChangeMsg" style="font-size:12.5px; margin:0;"></p>
-    </div>
-  </div>
+      <input type="password" id="currentPasswordForEmail" placeholder="Current password"
+        style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+      <input type="email" id="newEmailInput" placeholder="New email"
+        style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+      <button id="changeEmailBtn"
+        style="width:100%; padding:10px; background:#12233d; color:white; border:none; border-radius:8px; cursor:pointer; margin-bottom:8px;">Update
+        Email</button>
+      <p id="emailChangeMsg" style="font-size:12.5px; margin:0 0 20px;"></p>
 
-  <div id="courseModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(18,35,61,0.6); z-index:100; align-items:center; justify-content:center;">
-    <div style="background:var(--card-bg); max-width:600px; width:90%; max-height:80vh; overflow-y:auto; border-radius:10px; padding:28px;">
-      <button id="closeModalBtn" style="float:right; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text-primary);">✕</button>
-      <div id="modalContent"></div>
+      <h4 style="margin-bottom:6px; color:var(--text-primary);">Update Your Level</h4>
+      <p style="font-size:12.5px; color:var(--text-muted); margin:0 0 8px;">Moved up a year? Update your level below —
+        your department stays the same, and you'll immediately see that level's courses.</p>
+      <select id="levelUpdateSelect"
+        style="width:100%; padding:10px; margin-bottom:8px; border:1px solid var(--border-strong); border-radius:8px; background:var(--input-bg); color:var(--text-primary);">
+        <option value="100L">100L</option>
+        <option value="200L">200L</option>
+        <option value="300L">300L</option>
+        <option value="400L">400L</option>
+      </select>
+      <button id="updateLevelBtn"
+        style="width:100%; padding:10px; background:#12233d; color:white; border:none; border-radius:8px; cursor:pointer; margin-bottom:8px;">Update
+        Level</button>
+      <p id="levelChangeMsg" style="font-size:12.5px; margin:0;"></p>
     </div>
   </div>
 
   <!-- Firebase SDK (CDN version) -->
- <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where, doc, getDoc, setDoc, orderBy, limit, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, sendEmailVerification, updatePassword, updateEmail, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, where, doc, getDoc, setDoc, updateDoc, orderBy, limit, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail, sendEmailVerification, updatePassword, updateEmail, reauthenticateWithCredential, EmailAuthProvider } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBkavWHN37Qu-4UphxFDihacSJJfbjD9Io",
-    authDomain: "engineering-study-hub-b9d53.firebaseapp.com",
-    projectId: "engineering-study-hub-b9d53",
-    storageBucket: "engineering-study-hub-b9d53.firebasestorage.app",
-    messagingSenderId: "802340224421",
-    appId: "1:802340224421:web:542f3c584caec159a87c4c"
-  };
+    const firebaseConfig = {
+      apiKey: "AIzaSyBkavWHN37Qu-4UphxFDihacSJJfbjD9Io",
+      authDomain: "engineering-study-hub-b9d53.firebaseapp.com",
+      projectId: "engineering-study-hub-b9d53",
+      storageBucket: "engineering-study-hub-b9d53.firebasestorage.app",
+      messagingSenderId: "802340224421",
+      appId: "1:802340224421:web:542f3c584caec159a87c4c"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const CLOUDINARY_CLOUD_NAME = "vfnj6izy";
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const CLOUDINARY_CLOUD_NAME = "vfnj6izy";
+    const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
-  function escapeHTML(value) {
-    return String(value ?? "").replace(/[&<>"']/g, (char) => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-    }[char]));
-  }
-
-  function isSafeHttpUrl(value) {
-    try {
-      const url = new URL(value, window.location.href);
-      return url.protocol === "https:" || url.protocol === "http:";
-    } catch {
-      return false;
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[char]));
     }
-  }
 
-document.getElementById("footerYear").textContent = new Date().getFullYear();
+    function isSafeHttpUrl(value) {
+      try {
+        const url = new URL(value, window.location.href);
+        return url.protocol === "https:" || url.protocol === "http:";
+      } catch {
+        return false;
+      }
+    }
 
-  let currentLevel = "100L";
-  let authMode = "login";
-  let currentUserId = null;
-  let favoriteIds = new Set();
+    document.getElementById("footerYear").textContent = new Date().getFullYear();
 
-  const COURSE_PAGE_SIZE = 6;
-  let currentCourseMatches = [];
-  let visibleCourseCount = COURSE_PAGE_SIZE;
+    let currentLevel = "100L";
+    let authMode = "login";
+    let currentUserId = null;
+    let favoriteIds = new Set();
 
-  let feedbackUnsub = null;
-  let lastFeedbackMsgCount = 0;
-  let feedbackInitialLoad = true;
+    let currentCourseMatches = [];
+    let courseBadgeTickInterval = null;
 
-  const authBox = document.getElementById("authBox");
-  const appContent = document.getElementById("appContent");
-  const authTitle = document.getElementById("authTitle");
-  const authEmail = document.getElementById("authEmail");
-  const authPassword = document.getElementById("authPassword");
+    let feedbackUnsub = null;
+    let lastFeedbackMsgCount = 0;
+    let feedbackInitialLoad = true;
+
+    const authBox = document.getElementById("authBox");
+    const appContent = document.getElementById("appContent");
+    const authTitle = document.getElementById("authTitle");
+    const authEmail = document.getElementById("authEmail");
+    const authPassword = document.getElementById("authPassword");
     window.addEventListener("pageshow", () => {
-    authEmail.value = "";
-    authPassword.value = "";
-  });
-  const authSubmitBtn = document.getElementById("authSubmitBtn");
-  const authError = document.getElementById("authError");
-  const authToggleText = document.getElementById("authToggleText");
-  const authToggleLink = document.getElementById("authToggleLink");
-  const logoutBtn = document.getElementById("logoutBtn");
+      authEmail.value = "";
+      authPassword.value = "";
+    });
+    const authSubmitBtn = document.getElementById("authSubmitBtn");
+    const authError = document.getElementById("authError");
+    const authToggleText = document.getElementById("authToggleText");
+    const authToggleLink = document.getElementById("authToggleLink");
+    const logoutBtn = document.getElementById("logoutBtn");
     const themeToggleBtn = document.getElementById("themeToggleBtn");
 
-  function applyTheme(theme) {
-    if (theme === "dark") {
-      document.documentElement.setAttribute("data-theme", "dark");
-      themeToggleBtn.textContent = "☀️ Light Mode";
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-      themeToggleBtn.textContent = "🌙 Dark Mode";
-    }
-  }
-
-  const savedTheme = localStorage.getItem("studyHubTheme") || "light";
-  applyTheme(savedTheme);
-
-  themeToggleBtn.addEventListener("click", () => {
-    const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-    const newTheme = isDark ? "light" : "dark";
-    applyTheme(newTheme);
-    localStorage.setItem("studyHubTheme", newTheme);
-  });
-
-  authToggleLink.addEventListener("click", (e) => {
-    e.preventDefault();
-    authEmail.value = "";
-    authPassword.value = "";
-    authError.textContent = "";
-    if (authMode === "login") {
-      authMode = "signup";
-      authTitle.textContent = "Student Sign Up";
-      authSubmitBtn.textContent = "Sign Up";
-      authToggleText.textContent = "Already have an account?";
-      authToggleLink.textContent = "Log in";
-    } else {
-      authMode = "login";
-      authTitle.textContent = "Student Login";
-      authSubmitBtn.textContent = "Log In";
-      authToggleText.textContent = "Don't have an account?";
-      authToggleLink.textContent = "Sign up";
-    }
-    authError.textContent = "";
-  });
-
-  authSubmitBtn.addEventListener("click", async () => {
-    const email = authEmail.value;
-    const password = authPassword.value;
-    authError.textContent = "";
-
-    try {
-      if (authMode === "signup") {
-        const userCred = await createUserWithEmailAndPassword(auth, email, password);
-          await sendEmailVerification(userCred.user);
-        authError.style.color = "#2e7d5b";
-        authError.textContent = "Account created! Check your email to verify before logging in.";
-        await signOut(auth);
+    function applyTheme(theme) {
+      if (theme === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+        themeToggleBtn.textContent = "☀️ Light Mode";
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        document.documentElement.removeAttribute("data-theme");
+        themeToggleBtn.textContent = "🌙 Dark Mode";
       }
-    } catch (error) {
-      authError.style.color = "#c0392b";
-      authError.textContent = error.message;
-      authPassword.value = "";
     }
-  });
 
-  logoutBtn.addEventListener("click", () => {
-    signOut(auth);
-  });
+    const savedTheme = localStorage.getItem("studyHubTheme") || "light";
+    applyTheme(savedTheme);
 
-  async function loadUserFavorites(uid) {
-    currentUserId = uid;
-    const favDocRef = doc(db, "favorites", uid);
-    const favDoc = await getDoc(favDocRef);
-    if (favDoc.exists()) {
-      favoriteIds = new Set(favDoc.data().courseIds || []);
-    } else {
-      favoriteIds = new Set();
-    }
-  }
-
-  async function toggleFavorite(courseId) {
-    if (favoriteIds.has(courseId)) {
-      favoriteIds.delete(courseId);
-    } else {
-      favoriteIds.add(courseId);
-    }
-    await setDoc(doc(db, "favorites", currentUserId), { courseIds: Array.from(favoriteIds) });
-  }
-
-  function createCourseCard(courseId, course) {
-    const isFav = favoriteIds.has(courseId);
-
-    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-    const isNew = course.createdAt && (Date.now() - course.createdAt < sevenDaysMs);
-    const newBadge = isNew ? `<span class="newBadge">NEW</span>` : "";
-
-    const levelColors = { "100L": "#4a90a4", "200L": "#7d5ba6", "300L": "#c8712f", "400L": "#2e7d5b" };
-    const div = document.createElement("div");
-    div.className = "courseCard";
-div.style.setProperty("--level-color", levelColors[course.level] || "#0d9488");
-
-    const topRow = document.createElement("div");
-    topRow.style.cssText = "display:flex; justify-content:space-between; align-items:flex-start;";
-
-    const titleWrap = document.createElement("div");
-    titleWrap.innerHTML = `<h3>${escapeHTML(course.code)} — ${escapeHTML(course.title)}${newBadge}</h3>`;
-
-const starBtn = document.createElement("span");
-starBtn.className = "starIcon" + (isFav ? " active" : "");
-starBtn.textContent = isFav ? "★" : "☆";
-starBtn.title = isFav ? "Remove from favorites" : "Add to favorites";
-starBtn.setAttribute("role", "button");
-starBtn.setAttribute("aria-label", starBtn.title);
-starBtn.setAttribute("tabindex", "0");
-
-async function handleStarToggle(e) {
-  e.stopPropagation();
-  await toggleFavorite(courseId);
-  const nowFav = favoriteIds.has(courseId);
-  starBtn.textContent = nowFav ? "★" : "☆";
-  starBtn.classList.toggle("active", nowFav);
-  starBtn.title = nowFav ? "Remove from favorites" : "Add to favorites";
-  starBtn.setAttribute("aria-label", starBtn.title);
-
-  // On the Favorites tab specifically, un-starring should make the
-  // card disappear immediately instead of waiting for a manual reload.
-  const onFavoritesTab = document.querySelector('.level-btn[data-view="FAVORITES"]').classList.contains("active");
-  if (onFavoritesTab && !nowFav) {
-    starBtn.closest(".courseCard").remove();
-    updateStats(favoriteIds.size, "Your favorites");
-    if (document.getElementById("courseList").children.length === 0) {
-      document.getElementById("courseList").innerHTML = "<p>You haven't bookmarked any courses yet. Click the ☆ on a course to save it here.</p>";
-    }
-  }
-}
-
-starBtn.addEventListener("click", handleStarToggle);
-starBtn.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" || e.key === " ") {
-    e.preventDefault();
-    handleStarToggle(e);
-  }
-});
-
-    topRow.appendChild(titleWrap);
-    topRow.appendChild(starBtn);
-
-    const meta = document.createElement("p");
-    meta.className = "courseMeta";
-    meta.innerHTML = `${escapeHTML(course.level)} · ${escapeHTML(course.credit)}${course.academicSession ? ` <span class="sessionTag">${escapeHTML(course.academicSession)}</span>` : ""}`;
-
-    const hint = document.createElement("p");
-    hint.className = "courseHint";
-    hint.textContent = "Click to view notes & Q&A →";
-
-    div.appendChild(topRow);
-    div.appendChild(meta);
-    if (course.description) {
-      const desc = document.createElement("p");
-      desc.style.cssText = "font-size:13px; color:#6b7280; margin:2px 0 0;";
-      desc.textContent = course.description.length > 90 ? course.description.slice(0, 90) + "..." : course.description;
-      div.appendChild(desc);
-    }
-    div.appendChild(hint);
-
-        div.addEventListener("click", () => {
-      openCourseModal(course);
-      recordRecentlyViewed(courseId, course);
+    themeToggleBtn.addEventListener("click", () => {
+      const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+      const newTheme = isDark ? "light" : "dark";
+      applyTheme(newTheme);
+      localStorage.setItem("studyHubTheme", newTheme);
     });
 
-    return div;
-  }
+    authToggleLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      authEmail.value = "";
+      authPassword.value = "";
+      authError.textContent = "";
+      if (authMode === "login") {
+        authMode = "signup";
+        authTitle.textContent = "Student Sign Up";
+        authSubmitBtn.textContent = "Sign Up";
+        authToggleText.textContent = "Already have an account?";
+        authToggleLink.textContent = "Log in";
+      } else {
+        authMode = "login";
+        authTitle.textContent = "Student Login";
+        authSubmitBtn.textContent = "Log In";
+        authToggleText.textContent = "Don't have an account?";
+        authToggleLink.textContent = "Sign up";
+      }
+      authError.textContent = "";
+    });
 
-  async function loadRecentAdded() {
-    const container = document.getElementById("recentAddedList");
-    try {
-      const q = query(collection(db, "courses"), where("department", "==", studentDepartment), where("level", "==", studentLevel), orderBy("createdAt", "desc"), limit(5));
-      const querySnapshot = await getDocs(q);
+    authSubmitBtn.addEventListener("click", async () => {
+      const email = authEmail.value;
+      const password = authPassword.value;
+      authError.textContent = "";
 
-      if (querySnapshot.empty) {
-        container.innerHTML = `<p class="emptyNote">No courses yet.</p>`;
+      try {
+        if (authMode === "signup") {
+          const userCred = await createUserWithEmailAndPassword(auth, email, password);
+          await sendEmailVerification(userCred.user);
+          authError.style.color = "#2e7d5b";
+          authError.textContent = "Account created! Check your email to verify before logging in.";
+          await signOut(auth);
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+        }
+      } catch (error) {
+        authError.style.color = "#c0392b";
+        authError.textContent = error.message;
+        authPassword.value = "";
+      }
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth);
+    });
+
+    async function loadUserFavorites(uid) {
+      currentUserId = uid;
+      const favDocRef = doc(db, "favorites", uid);
+      const favDoc = await getDoc(favDocRef);
+      if (favDoc.exists()) {
+        favoriteIds = new Set(favDoc.data().courseIds || []);
+      } else {
+        favoriteIds = new Set();
+      }
+    }
+
+    async function toggleFavorite(courseId) {
+      if (favoriteIds.has(courseId)) {
+        favoriteIds.delete(courseId);
+      } else {
+        favoriteIds.add(courseId);
+      }
+      await setDoc(doc(db, "favorites", currentUserId), { courseIds: Array.from(favoriteIds) });
+    }
+
+    function createCourseCard(courseId, course) {
+      const isFav = favoriteIds.has(courseId);
+
+      const isNew = course.createdAt && (Date.now() - course.createdAt < ONE_DAY_MS);
+      const newBadge = isNew ? `<span class="newBadge">NEW</span>` : "";
+
+      const levelColors = { "100L": "#4a90a4", "200L": "#7d5ba6", "300L": "#c8712f", "400L": "#2e7d5b" };
+      const div = document.createElement("div");
+      div.className = "courseCard";
+      div.style.setProperty("--level-color", levelColors[course.level] || "#0d9488");
+
+      const topRow = document.createElement("div");
+      topRow.style.cssText = "display:flex; justify-content:space-between; align-items:flex-start;";
+
+      const titleWrap = document.createElement("div");
+      titleWrap.innerHTML = `<h3>${escapeHTML(course.code)} — ${escapeHTML(course.title)}${newBadge}</h3>`;
+
+      const starBtn = document.createElement("span");
+      starBtn.className = "starIcon" + (isFav ? " active" : "");
+      starBtn.textContent = isFav ? "★" : "☆";
+      starBtn.title = isFav ? "Remove from favorites" : "Add to favorites";
+      starBtn.setAttribute("role", "button");
+      starBtn.setAttribute("aria-label", starBtn.title);
+      starBtn.setAttribute("tabindex", "0");
+
+      async function handleStarToggle(e) {
+        e.stopPropagation();
+        await toggleFavorite(courseId);
+        const nowFav = favoriteIds.has(courseId);
+        starBtn.textContent = nowFav ? "★" : "☆";
+        starBtn.classList.toggle("active", nowFav);
+        starBtn.title = nowFav ? "Remove from favorites" : "Add to favorites";
+        starBtn.setAttribute("aria-label", starBtn.title);
+
+        // On the Favorites tab specifically, un-starring should make the
+        // card disappear immediately instead of waiting for a manual reload.
+        const onFavoritesTab = document.querySelector('.level-btn[data-view="FAVORITES"]').classList.contains("active");
+        if (onFavoritesTab && !nowFav) {
+          starBtn.closest(".courseCard").remove();
+          updateStats(favoriteIds.size, "Your favorites");
+          if (document.getElementById("courseList").children.length === 0) {
+            document.getElementById("courseList").innerHTML = "<p>You haven't bookmarked any courses yet. Click the ☆ on a course to save it here.</p>";
+          }
+        }
+      }
+
+      starBtn.addEventListener("click", handleStarToggle);
+      starBtn.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleStarToggle(e);
+        }
+      });
+
+      topRow.appendChild(titleWrap);
+      topRow.appendChild(starBtn);
+
+      const meta = document.createElement("p");
+      meta.className = "courseMeta";
+      meta.innerHTML = `${escapeHTML(course.level)} · ${escapeHTML(course.credit)}${course.academicSession ? ` <span class="sessionTag">${escapeHTML(course.academicSession)}</span>` : ""}`;
+
+      const hint = document.createElement("p");
+      hint.className = "courseHint";
+      hint.textContent = "Click to view notes & Q&A →";
+
+      div.appendChild(topRow);
+      div.appendChild(meta);
+      if (course.description) {
+        const desc = document.createElement("p");
+        desc.style.cssText = "font-size:13px; color:#6b7280; margin:2px 0 0;";
+        desc.textContent = course.description.length > 90 ? course.description.slice(0, 90) + "..." : course.description;
+        div.appendChild(desc);
+      }
+      div.appendChild(hint);
+
+      div.addEventListener("click", () => {
+        showCourseDetail(courseId, course);
+        recordRecentlyViewed(courseId, course);
+      });
+
+      return div;
+    }
+
+    async function loadRecentAdded() {
+      const container = document.getElementById("recentAddedList");
+      try {
+        const q = query(collection(db, "courses"), where("department", "==", studentDepartment), where("level", "==", studentLevel), orderBy("createdAt", "desc"), limit(5));
+        const querySnapshot = await getDocs(q);
+
+        if (querySnapshot.empty) {
+          container.innerHTML = `<p class="emptyNote">No courses yet.</p>`;
+          return;
+        }
+
+        container.innerHTML = "";
+        querySnapshot.forEach((docSnap) => {
+          const course = docSnap.data();
+          const item = document.createElement("div");
+          item.className = "panelItem";
+          item.textContent = `${course.code} — ${course.title}`;
+          item.addEventListener("click", () => {
+            showCourseDetail(docSnap.id, course);
+            recordRecentlyViewed(docSnap.id, course);
+          });
+          container.appendChild(item);
+        });
+      } catch (error) {
+        console.error("Recently Added error:", error);
+        container.innerHTML = `<p class="emptyNote">Couldn't load recent courses.</p>`;
+      }
+    }
+
+    let announcementsUnsub = null;
+
+    function loadAnnouncements() {
+      const container = document.getElementById("announcementsList");
+      const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"), limit(50));
+
+      if (announcementsUnsub) announcementsUnsub();
+
+      announcementsUnsub = onSnapshot(q, (querySnapshot) => {
+        if (querySnapshot.empty) {
+          container.innerHTML = `<p class="emptyNote">No announcements right now.</p>`;
+          return;
+        }
+
+        container.innerHTML = "";
+        querySnapshot.forEach((docSnap) => {
+          const a = docSnap.data();
+          const item = document.createElement("div");
+          item.className = "panelItem";
+          item.style.cursor = "default";
+          item.textContent = a.text;
+          container.appendChild(item);
+        });
+        container.scrollTop = 0;
+      }, (error) => {
+        console.error("Announcements listener error:", error);
+        container.innerHTML = `<p class="emptyNote">Couldn't load announcements.</p>`;
+      });
+    }
+
+    document.getElementById("addPlanBtn").addEventListener("click", async () => {
+      const dateInput = document.getElementById("planDateInput");
+      const noteInput = document.getElementById("planNoteInput");
+      const date = dateInput.value;
+      const note = noteInput.value.trim();
+      if (!date || !note) {
+        alert("Please pick a valid date and enter a note.");
+        return;
+      }
+
+      const docRef = doc(db, "studyPlans", currentUserId);
+      const docSnap = await getDoc(docRef);
+      let plans = docSnap.exists() ? docSnap.data().plans || [] : [];
+
+      plans.push({ date: date, note: note });
+      plans.sort((a, b) => a.date.localeCompare(b.date));
+
+      await setDoc(docRef, { plans: plans });
+      dateInput.value = "";
+      noteInput.value = "";
+      loadStudyPlans();
+    });
+
+    async function loadStudyPlans() {
+      const container = document.getElementById("studyPlanList");
+      const docRef = doc(db, "studyPlans", currentUserId);
+      const docSnap = await getDoc(docRef);
+
+      let plans = docSnap.exists() ? docSnap.data().plans || [] : [];
+
+      const today = new Date().toISOString().split("T")[0];
+      plans = plans.filter((p) => p.date >= today);
+
+      if (plans.length === 0) {
+        container.innerHTML = `<p class="emptyNote">No upcoming study plans. Add one above.</p>`;
         return;
       }
 
       container.innerHTML = "";
-      querySnapshot.forEach((docSnap) => {
-        const course = docSnap.data();
+      plans.forEach((plan, index) => {
         const item = document.createElement("div");
-        item.className = "panelItem";
-        item.textContent = `${course.code} — ${course.title}`;
-        item.addEventListener("click", () => {
-        openCourseModal(course);
-        recordRecentlyViewed(docSnap.id, course);
+        item.style.cssText = "display:flex; justify-content:space-between; align-items:center; font-size:12.5px; padding:6px 0; border-bottom:1px solid #f0ede4;";
+        const dateLabel = new Date(plan.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        item.innerHTML = `<span><strong>${dateLabel}</strong> — ${plan.note}</span>`;
+
+        const removeBtn = document.createElement("span");
+        removeBtn.textContent = "✕";
+        removeBtn.style.cssText = "cursor:pointer; color:#c0392b; padding-left:8px;";
+        removeBtn.addEventListener("click", async () => {
+          const fullDocSnap = await getDoc(docRef);
+          let fullPlans = fullDocSnap.data().plans || [];
+          fullPlans = fullPlans.filter((p) => !(p.date === plan.date && p.note === plan.note));
+          await setDoc(docRef, { plans: fullPlans });
+          loadStudyPlans();
         });
+
+        item.appendChild(removeBtn);
         container.appendChild(item);
       });
-    } catch (error) {
-      console.error("Recently Added error:", error);
-      container.innerHTML = `<p class="emptyNote">Couldn't load recent courses.</p>`;
-    }
-  }
-
-let announcementsUnsub = null;
-
-function loadAnnouncements() {
-  const container = document.getElementById("announcementsList");
-  const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"), limit(50));
-
-  if (announcementsUnsub) announcementsUnsub();
-
-  announcementsUnsub = onSnapshot(q, (querySnapshot) => {
-    if (querySnapshot.empty) {
-      container.innerHTML = `<p class="emptyNote">No announcements right now.</p>`;
-      return;
     }
 
-    container.innerHTML = "";
-    querySnapshot.forEach((docSnap) => {
-      const a = docSnap.data();
-      const item = document.createElement("div");
-      item.className = "panelItem";
-      item.style.cursor = "default";
-      item.textContent = a.text;
-      container.appendChild(item);
-    });
-    container.scrollTop = 0;
-  }, (error) => {
-    console.error("Announcements listener error:", error);
-    container.innerHTML = `<p class="emptyNote">Couldn't load announcements.</p>`;
-  });
-}
+    function formatFeedbackTimestamp(timestamp) {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const isToday = date.toDateString() === now.toDateString();
+      const timeStr = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
-    document.getElementById("addPlanBtn").addEventListener("click", async () => {
-    const dateInput = document.getElementById("planDateInput");
-    const noteInput = document.getElementById("planNoteInput");
-    const date = dateInput.value;
-    const note = noteInput.value.trim();
-    if (!date || !note) {
-      alert("Please pick a valid date and enter a note.");
-      return;
+      if (isToday) return timeStr;
+
+      const yesterday = new Date(now);
+      yesterday.setDate(now.getDate() - 1);
+      if (date.toDateString() === yesterday.toDateString()) return `Yesterday, ${timeStr}`;
+
+      const dateStr = date.toLocaleDateString([], { month: "short", day: "numeric" });
+      return `${dateStr}, ${timeStr}`;
     }
 
-    const docRef = doc(db, "studyPlans", currentUserId);
-    const docSnap = await getDoc(docRef);
-    let plans = docSnap.exists() ? docSnap.data().plans || [] : [];
+    let lastFeedbackRawMessages = [];
+    let feedbackTickInterval = null;
 
-    plans.push({ date: date, note: note });
-    plans.sort((a, b) => a.date.localeCompare(b.date));
+    function renderFeedbackThread(allMessages) {
+      const container = document.getElementById("feedbackThread");
+      const badge = document.getElementById("feedbackNewBadge");
+      const messages = allMessages.filter((m) => !m.timestamp || (Date.now() - m.timestamp < ONE_DAY_MS));
 
-    await setDoc(docRef, { plans: plans });
-    dateInput.value = "";
-    noteInput.value = "";
-    loadStudyPlans();
-  });
+      if (messages.length === 0) {
+        container.innerHTML = `<p class="emptyNote">Send a message to the admin below.</p>`;
+        lastFeedbackMsgCount = 0;
+        feedbackInitialLoad = false;
+        return;
+      }
 
-  async function loadStudyPlans() {
-    const container = document.getElementById("studyPlanList");
-    const docRef = doc(db, "studyPlans", currentUserId);
-    const docSnap = await getDoc(docRef);
+      if (!feedbackInitialLoad && messages.length > lastFeedbackMsgCount) {
+        const newest = messages[messages.length - 1];
+        if (newest.from === "admin") {
+          badge.style.display = "inline-block";
+        }
+      }
+      lastFeedbackMsgCount = messages.length;
+      feedbackInitialLoad = false;
 
-    let plans = docSnap.exists() ? docSnap.data().plans || [] : [];
+      container.innerHTML = "";
+      messages.forEach((m) => {
+        const wrapper = document.createElement("div");
+        const isAdmin = m.from === "admin";
+        wrapper.style.cssText = `display:flex; flex-direction:column; margin-bottom:6px; max-width:85%; ${isAdmin ? "margin-right:auto; align-items:flex-start;" : "margin-left:auto; align-items:flex-end;"}`;
 
-    const today = new Date().toISOString().split("T")[0];
-    plans = plans.filter((p) => p.date >= today);
+        const bubble = document.createElement("div");
+        bubble.style.cssText = `font-size:12px; padding:6px 10px; border-radius:8px; word-wrap:break-word; overflow-wrap:break-word; ${isAdmin ? "background:#eeeadf; color:#1f2937;" : "background:#12233d; color:white;"}`;
+        bubble.textContent = m.text;
+        wrapper.appendChild(bubble);
 
-    if (plans.length === 0) {
-      container.innerHTML = `<p class="emptyNote">No upcoming study plans. Add one above.</p>`;
-      return;
+        if (m.timestamp) {
+          const time = document.createElement("span");
+          time.textContent = formatFeedbackTimestamp(m.timestamp);
+          time.style.cssText = "font-size:10px; color:#8a8f98; margin-top:2px; padding:0 2px;";
+          wrapper.appendChild(time);
+        }
+
+        container.appendChild(wrapper);
+      });
+      container.scrollTop = container.scrollHeight;
     }
 
-    container.innerHTML = "";
-    plans.forEach((plan, index) => {
-      const item = document.createElement("div");
-      item.style.cssText = "display:flex; justify-content:space-between; align-items:center; font-size:12.5px; padding:6px 0; border-bottom:1px solid #f0ede4;";
-      const dateLabel = new Date(plan.date + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
-      item.innerHTML = `<span><strong>${dateLabel}</strong> — ${plan.note}</span>`;
+    function loadFeedbackThread() {
+      const docRef = doc(db, "feedback", currentUserId);
 
-      const removeBtn = document.createElement("span");
-      removeBtn.textContent = "✕";
-      removeBtn.style.cssText = "cursor:pointer; color:#c0392b; padding-left:8px;";
-      removeBtn.addEventListener("click", async () => {
-        const fullDocSnap = await getDoc(docRef);
-        let fullPlans = fullDocSnap.data().plans || [];
-        fullPlans = fullPlans.filter((p) => !(p.date === plan.date && p.note === plan.note));
-        await setDoc(docRef, { plans: fullPlans });
-        loadStudyPlans();
+      if (feedbackUnsub) feedbackUnsub();
+      if (feedbackTickInterval) clearInterval(feedbackTickInterval);
+      feedbackInitialLoad = true;
+      lastFeedbackMsgCount = 0;
+      lastFeedbackRawMessages = [];
+
+      feedbackUnsub = onSnapshot(docRef, (docSnap) => {
+        lastFeedbackRawMessages = docSnap.exists() ? docSnap.data().messages || [] : [];
+        renderFeedbackThread(lastFeedbackRawMessages);
       });
 
-      item.appendChild(removeBtn);
-      container.appendChild(item);
-    });
-  }
-
-  function formatFeedbackTimestamp(timestamp) {
-  const date = new Date(timestamp);
-  const now = new Date();
-  const isToday = date.toDateString() === now.toDateString();
-  const timeStr = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-  if (isToday) return timeStr;
-
-  const yesterday = new Date(now);
-  yesterday.setDate(now.getDate() - 1);
-  if (date.toDateString() === yesterday.toDateString()) return `Yesterday, ${timeStr}`;
-
-  const dateStr = date.toLocaleDateString([], { month: "short", day: "numeric" });
-  return `${dateStr}, ${timeStr}`;
-}
-
-function loadFeedbackThread() {
-  const container = document.getElementById("feedbackThread");
-  const badge = document.getElementById("feedbackNewBadge");
-  const docRef = doc(db, "feedback", currentUserId);
-
-  if (feedbackUnsub) feedbackUnsub();
-  feedbackInitialLoad = true;
-  lastFeedbackMsgCount = 0;
-
-  feedbackUnsub = onSnapshot(docRef, (docSnap) => {
-    const messages = docSnap.exists() ? docSnap.data().messages || [] : [];
-
-    if (messages.length === 0) {
-      container.innerHTML = `<p class="emptyNote">Send a message to the admin below.</p>`;
-      lastFeedbackMsgCount = 0;
-      feedbackInitialLoad = false;
-      return;
+      // Re-render on a timer too, so messages fade out at the 24h mark
+      // even if no new Firestore write happens while the page is open.
+      feedbackTickInterval = setInterval(() => {
+        renderFeedbackThread(lastFeedbackRawMessages);
+      }, 60 * 1000);
     }
 
-    if (!feedbackInitialLoad && messages.length > lastFeedbackMsgCount) {
-      const newest = messages[messages.length - 1];
-      if (newest.from === "admin") {
-        badge.style.display = "inline-block";
-      }
-    }
-    lastFeedbackMsgCount = messages.length;
-    feedbackInitialLoad = false;
-
-    container.innerHTML = "";
-    messages.forEach((m) => {
-      const wrapper = document.createElement("div");
-      const isAdmin = m.from === "admin";
-      wrapper.style.cssText = `display:flex; flex-direction:column; margin-bottom:6px; max-width:85%; ${isAdmin ? "margin-right:auto; align-items:flex-start;" : "margin-left:auto; align-items:flex-end;"}`;
-
-      const bubble = document.createElement("div");
-      bubble.style.cssText = `font-size:12px; padding:6px 10px; border-radius:8px; word-wrap:break-word; overflow-wrap:break-word; ${isAdmin ? "background:#eeeadf; color:#1f2937;" : "background:#12233d; color:white;"}`;
-      bubble.textContent = m.text;
-      wrapper.appendChild(bubble);
-
-      if (m.timestamp) {
-        const time = document.createElement("span");
-        time.textContent = formatFeedbackTimestamp(m.timestamp);
-        time.style.cssText = "font-size:10px; color:#8a8f98; margin-top:2px; padding:0 2px;";
-        wrapper.appendChild(time);
-      }
-
-      container.appendChild(wrapper);
+    document.getElementById("feedbackThread").addEventListener("click", () => {
+      document.getElementById("feedbackNewBadge").style.display = "none";
     });
-    container.scrollTop = container.scrollHeight;
-  });
-}
+    document.getElementById("feedbackInput").addEventListener("focus", () => {
+      document.getElementById("feedbackNewBadge").style.display = "none";
+    });
 
-document.getElementById("feedbackThread").addEventListener("click", () => {
-  document.getElementById("feedbackNewBadge").style.display = "none";
-});
-document.getElementById("feedbackInput").addEventListener("focus", () => {
-  document.getElementById("feedbackNewBadge").style.display = "none";
-});
+    document.getElementById("sendFeedbackBtn").addEventListener("click", async () => {
+      const input = document.getElementById("feedbackInput");
+      const text = input.value.trim();
+      if (!text) return;
 
-  document.getElementById("sendFeedbackBtn").addEventListener("click", async () => {
-    const input = document.getElementById("feedbackInput");
-    const text = input.value.trim();
-    if (!text) return;
+      const docRef = doc(db, "feedback", currentUserId);
+      const docSnap = await getDoc(docRef);
+      let messages = docSnap.exists() ? docSnap.data().messages || [] : [];
 
-    const docRef = doc(db, "feedback", currentUserId);
-    const docSnap = await getDoc(docRef);
-    let messages = docSnap.exists() ? docSnap.data().messages || [] : [];
+      // Drop messages older than 24h so the thread doesn't grow forever.
+      messages = messages.filter((m) => !m.timestamp || (Date.now() - m.timestamp < ONE_DAY_MS));
 
-messages.push({ from: "student", text: text, timestamp: Date.now() });
-await setDoc(docRef, { messages: messages, studentEmail: auth.currentUser.email });
+      messages.push({ from: "student", text: text, timestamp: Date.now() });
+      await setDoc(docRef, { messages: messages, studentEmail: auth.currentUser.email });
 
-input.value = "";
-// No need to call loadFeedbackThread() again — the onSnapshot listener
-// already re-renders the thread automatically when this write lands.
-  });
+      input.value = "";
+      // No need to call loadFeedbackThread() again — the onSnapshot listener
+      // already re-renders the thread automatically when this write lands.
+    });
 
     document.getElementById("settingsBtn").addEventListener("click", () => {
-    document.getElementById("settingsModal").style.display = "flex";
-  });
+      document.getElementById("levelUpdateSelect").value = studentLevel;
+      document.getElementById("settingsModal").style.display = "flex";
+    });
 
-  document.getElementById("closeSettingsBtn").addEventListener("click", () => {
-    document.getElementById("settingsModal").style.display = "none";
-  });
-  
+    document.getElementById("closeSettingsBtn").addEventListener("click", () => {
+      document.getElementById("settingsModal").style.display = "none";
+    });
+
     document.getElementById("mobileMenuBtn").addEventListener("click", () => {
-    document.getElementById("accountMenu").classList.toggle("open");
-  });
+      document.getElementById("accountMenu").classList.toggle("open");
+    });
 
-  document.getElementById("changePasswordBtn").addEventListener("click", async () => {
-    const currentPassword = document.getElementById("currentPasswordInput").value;
-    const newPassword = document.getElementById("newPasswordInput").value;
-    const msg = document.getElementById("passwordChangeMsg");
-    msg.textContent = "";
+    document.getElementById("changePasswordBtn").addEventListener("click", async () => {
+      const currentPassword = document.getElementById("currentPasswordInput").value;
+      const newPassword = document.getElementById("newPasswordInput").value;
+      const msg = document.getElementById("passwordChangeMsg");
+      msg.textContent = "";
 
-    if (!currentPassword || !newPassword) {
-      msg.style.color = "#c0392b";
-      msg.textContent = "Fill in both fields.";
-      return;
-    }
+      if (!currentPassword || !newPassword) {
+        msg.style.color = "#c0392b";
+        msg.textContent = "Fill in both fields.";
+        return;
+      }
 
-    try {
-      const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await updatePassword(auth.currentUser, newPassword);
-      msg.style.color = "#2e7d5b";
-      msg.textContent = "Password updated successfully.";
-      document.getElementById("currentPasswordInput").value = "";
-      document.getElementById("newPasswordInput").value = "";
-    } catch (error) {
-      msg.style.color = "#c0392b";
-      msg.textContent = error.message;
-    }
-  });
-
-  document.getElementById("changeEmailBtn").addEventListener("click", async () => {
-    const currentPassword = document.getElementById("currentPasswordForEmail").value;
-    const newEmail = document.getElementById("newEmailInput").value;
-    const msg = document.getElementById("emailChangeMsg");
-    msg.textContent = "";
-
-    if (!currentPassword || !newEmail) {
-      msg.style.color = "#c0392b";
-      msg.textContent = "Fill in both fields.";
-      return;
-    }
-
-    try {
-      const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await updateEmail(auth.currentUser, newEmail);
-      await sendEmailVerification(auth.currentUser);
-      msg.style.color = "#2e7d5b";
-      msg.textContent = "Email updated — check your new inbox to verify it.";
-      document.getElementById("currentPasswordForEmail").value = "";
-      document.getElementById("newEmailInput").value = "";
-    } catch (error) {
-      msg.style.color = "#c0392b";
-      msg.textContent = error.message;
-    }
-  });
-
-    document.getElementById("forgotPasswordLink").addEventListener("click", async (e) => {
-    e.preventDefault();
-    const email = authEmail.value.trim();
-    if (!email) {
-      authError.textContent = "Enter your email above first, then click 'Forgot password?'";
-      return;
-    }
-    try {
-      await sendPasswordResetEmail(auth, email);
-      authError.style.color = "#2e7d5b";
-      authError.textContent = "Password reset email sent — check your inbox.";
-    } catch (error) {
-      authError.style.color = "#c0392b";
-      authError.textContent = error.message;
-    }
-  });
-
-    let studentDepartment = null;
-  let studentLevel = null;
-
-  function startDashboard(department, level) {
-    studentDepartment = department;
-    studentLevel = level;
-    document.getElementById("deptLevelLabel").textContent = `${department} · ${level}`;
-
-    document.querySelector('.level-btn[data-view="courses"]').classList.add("active");
-    loadCourses();
-    loadRecentAdded();
-    loadRecentlyViewed();
-    loadAnnouncements();
-    loadStudyPlans();
-    loadFeedbackThread();
-  }
-
-  document.querySelectorAll('#sidebarNav .level-btn').forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelectorAll('#sidebarNav .level-btn').forEach((b) => b.classList.remove("active"));
-      button.classList.add("active");
-      document.getElementById("searchInput").value = "";
-
-      const view = button.getAttribute("data-view");
-      if (view === "FAVORITES") {
-        loadFavoriteCourses();
-      } else {
-        loadCourses();
+      try {
+        const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
+        await reauthenticateWithCredential(auth.currentUser, credential);
+        await updatePassword(auth.currentUser, newPassword);
+        msg.style.color = "#2e7d5b";
+        msg.textContent = "Password updated successfully.";
+        document.getElementById("currentPasswordInput").value = "";
+        document.getElementById("newPasswordInput").value = "";
+      } catch (error) {
+        msg.style.color = "#c0392b";
+        msg.textContent = error.message;
       }
     });
-  });
+
+    document.getElementById("changeEmailBtn").addEventListener("click", async () => {
+      const currentPassword = document.getElementById("currentPasswordForEmail").value;
+      const newEmail = document.getElementById("newEmailInput").value;
+      const msg = document.getElementById("emailChangeMsg");
+      msg.textContent = "";
+
+      if (!currentPassword || !newEmail) {
+        msg.style.color = "#c0392b";
+        msg.textContent = "Fill in both fields.";
+        return;
+      }
+
+      try {
+        const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
+        await reauthenticateWithCredential(auth.currentUser, credential);
+        await updateEmail(auth.currentUser, newEmail);
+        await sendEmailVerification(auth.currentUser);
+        msg.style.color = "#2e7d5b";
+        msg.textContent = "Email updated — check your new inbox to verify it.";
+        document.getElementById("currentPasswordForEmail").value = "";
+        document.getElementById("newEmailInput").value = "";
+      } catch (error) {
+        msg.style.color = "#c0392b";
+        msg.textContent = error.message;
+      }
+    });
+
+    document.getElementById("updateLevelBtn").addEventListener("click", async () => {
+      const newLevel = document.getElementById("levelUpdateSelect").value;
+      const msg = document.getElementById("levelChangeMsg");
+      msg.textContent = "";
+
+      if (newLevel === studentLevel) {
+        msg.style.color = "#c0392b";
+        msg.textContent = "You're already on this level.";
+        return;
+      }
+
+      const confirmChange = confirm(`Update your level to ${newLevel}? You'll immediately start seeing ${studentDepartment} ${newLevel} courses instead of ${studentLevel}.`);
+      if (!confirmChange) return;
+
+      try {
+        // updateDoc (not setDoc) so the student's original createdAt/join
+        // date is preserved instead of being overwritten every time they
+        // change level.
+        await updateDoc(doc(db, "studentProfiles", auth.currentUser.uid), {
+          department: studentDepartment,
+          level: newLevel
+        });
+
+        msg.style.color = "#2e7d5b";
+        msg.textContent = `Level updated to ${newLevel}.`;
+
+        startDashboard(studentDepartment, newLevel);
+      } catch (error) {
+        msg.style.color = "#c0392b";
+        msg.textContent = error.message;
+      }
+    });
+
+    document.getElementById("forgotPasswordLink").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const email = authEmail.value.trim();
+      if (!email) {
+        authError.textContent = "Enter your email above first, then click 'Forgot password?'";
+        return;
+      }
+      try {
+        await sendPasswordResetEmail(auth, email);
+        authError.style.color = "#2e7d5b";
+        authError.textContent = "Password reset email sent — check your inbox.";
+      } catch (error) {
+        authError.style.color = "#c0392b";
+        authError.textContent = error.message;
+      }
+    });
+
+    let studentDepartment = null;
+    let studentLevel = null;
+
+    function startDashboard(department, level) {
+      studentDepartment = department;
+      studentLevel = level;
+      document.getElementById("deptLevelLabel").textContent = `${department} · ${level}`;
+
+      document.querySelector('.level-btn[data-view="courses"]').classList.add("active");
+      loadCourses();
+      loadRecentAdded();
+      loadRecentlyViewed();
+      loadAnnouncements();
+      loadStudyPlans();
+      loadFeedbackThread();
+      handleHashRoute();
+
+      // Re-render the visible course cards periodically so "NEW" badges
+      // disappear on their own once a course passes the 24h mark.
+      if (courseBadgeTickInterval) clearInterval(courseBadgeTickInterval);
+      courseBadgeTickInterval = setInterval(() => {
+        if (currentCourseMatches.length > 0) {
+          renderCourseList(currentCourseMatches);
+        }
+      }, 60 * 1000);
+    }
+
+    document.querySelectorAll('#sidebarNav .level-btn').forEach((button) => {
+      button.addEventListener("click", () => {
+        showCourseListView();
+        document.querySelectorAll('#sidebarNav .level-btn').forEach((b) => b.classList.remove("active"));
+        button.classList.add("active");
+        document.getElementById("searchInput").value = "";
+
+        const view = button.getAttribute("data-view");
+        if (view === "FAVORITES") {
+          loadFavoriteCourses();
+        } else {
+          loadCourses();
+        }
+      });
+    });
 
     const DONATION_CLOUDINARY_PRESET = "study_hub_uploads";
 
-  async function uploadDonationReceipt(file) {
-    const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", DONATION_CLOUDINARY_PRESET);
+    async function uploadDonationReceipt(file) {
+      const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", DONATION_CLOUDINARY_PRESET);
 
-    const response = await fetch(url, { method: "POST", body: formData });
-    if (!response.ok) throw new Error("Receipt upload failed.");
-    const data = await response.json();
-    return data.secure_url;
-  }
-
-  async function openDonationModal() {
-    document.getElementById("donationFormView").style.display = "block";
-    document.getElementById("donationThanksView").style.display = "none";
-    document.getElementById("donationModal").style.display = "flex";
-
-    const bankSnap = await getDoc(doc(db, "settings", "donationInfo"));
-    const bankBox = document.getElementById("donationBankDetails");
-    if (bankSnap.exists()) {
-      const d = bankSnap.data();
-      bankBox.innerHTML = `${escapeHTML(d.bankName)}<br>${escapeHTML(d.accountNumber)}<br>${escapeHTML(d.accountName)}`;
-    } else {
-      bankBox.textContent = "Account details not available yet.";
-    }
-  }
-
-  document.getElementById("openDonationBtn").addEventListener("click", openDonationModal);
-
-  document.getElementById("closeDonationBtn").addEventListener("click", () => {
-    document.getElementById("donationModal").style.display = "none";
-  });
-
-  document.getElementById("submitDonationBtn").addEventListener("click", async () => {
-    const firstName = document.getElementById("donorFirstName").value.trim();
-    const lastName = document.getElementById("donorLastName").value.trim();
-    const email = document.getElementById("donorEmail").value.trim();
-    const amount = parseFloat(document.getElementById("donorAmount").value);
-    const receiptFile = document.getElementById("donationReceiptFile").files[0];
-    const msg = document.getElementById("donationFormMsg");
-    msg.textContent = "";
-
-    if (!firstName || !lastName) {
-      msg.textContent = "Please enter your full name.";
-      return;
-    }
-    if (!amount || amount < 50) {
-      msg.textContent = "Amount must be at least ₦50.00.";
-      return;
-    }
-    if (!receiptFile) {
-      msg.textContent = "Please upload your transfer receipt.";
-      return;
+      const response = await fetch(url, { method: "POST", body: formData });
+      if (!response.ok) throw new Error("Receipt upload failed.");
+      const data = await response.json();
+      return data.secure_url;
     }
 
-    const submitBtn = document.getElementById("submitDonationBtn");
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Submitting...";
+    async function openDonationModal() {
+      document.getElementById("donationFormView").style.display = "block";
+      document.getElementById("donationThanksView").style.display = "none";
+      document.getElementById("donationModal").style.display = "flex";
 
-    try {
-      const receiptUrl = await uploadDonationReceipt(receiptFile);
-
-      await addDoc(collection(db, "donations"), {
-        firstName,
-        lastName,
-        email: email || null,
-        amount,
-        receiptUrl,
-        studentEmail: auth.currentUser.email,
-        read: false,
-        createdAt: Date.now()
-      });
-
-      document.getElementById("donationFormView").style.display = "none";
-      document.getElementById("donationThanksView").style.display = "block";
-
-      document.getElementById("donorFirstName").value = "";
-      document.getElementById("donorLastName").value = "";
-      document.getElementById("donorEmail").value = "";
-      document.getElementById("donorAmount").value = "";
-      document.getElementById("donationReceiptFile").value = "";
-    } catch (error) {
-      msg.textContent = "Something went wrong: " + error.message;
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = "Done";
-    }
-  });
-
-  document.getElementById("donationModal").addEventListener("click", (e) => {
-    const thanksVisible = document.getElementById("donationThanksView").style.display === "block";
-    if (thanksVisible) {
-      document.getElementById("donationModal").style.display = "none";
-    }
-  });
-
-    async function recordRecentlyViewed(courseId, course) {
-    const docRef = doc(db, "recentlyViewed", currentUserId);
-    const docSnap = await getDoc(docRef);
-    let list = docSnap.exists() ? docSnap.data().courses || [] : [];
-
-    list = list.filter((c) => c.id !== courseId);
-    list.unshift({ id: courseId, code: course.code, title: course.title });
-    list = list.slice(0, 5);
-
-    await setDoc(docRef, { courses: list });
-    loadRecentlyViewed();
-  }
-
-  async function loadRecentlyViewed() {
-    const container = document.getElementById("recentViewedList");
-    const docRef = doc(db, "recentlyViewed", currentUserId);
-    const docSnap = await getDoc(docRef);
-
-    if (!docSnap.exists() || !docSnap.data().courses || docSnap.data().courses.length === 0) {
-      container.innerHTML = `<p class="emptyNote">Courses you open will show up here.</p>`;
-      return;
-    }
-
-    container.innerHTML = "";
-    docSnap.data().courses.forEach((c) => {
-      const item = document.createElement("div");
-      item.className = "panelItem";
-      item.textContent = `${c.code} — ${c.title}`;
-      item.addEventListener("click", async () => {
-        const fullSnap = await getDoc(doc(db, "courses", c.id));
-        if (fullSnap.exists()) openCourseModal(fullSnap.data());
-      });
-      container.appendChild(item);
-    });
-  }
-
-  function updateStats(courseCount, label) {
-    const statsRow = document.getElementById("statsRow");
-    statsRow.innerHTML = `
-      <div class="statCard"><div class="statNum">${courseCount}</div><div class="statLabel">${label}</div></div>
-      <div class="statCard"><div class="statNum">${favoriteIds.size}</div><div class="statLabel">Bookmarked</div></div>
-    `;
-  }
-
-function renderCourseList(matches) {
-  const courseList = document.getElementById("courseList");
-  const viewMoreWrap = document.getElementById("viewMoreWrap");
-  courseList.innerHTML = "";
-
-  if (matches.length === 0) {
-    viewMoreWrap.style.display = "none";
-    return;
-  }
-
-  const visible = matches.slice(0, visibleCourseCount);
-  visible.forEach(({ id, course }) => {
-    courseList.appendChild(createCourseCard(id, course));
-  });
-
-  viewMoreWrap.style.display = matches.length > visibleCourseCount ? "block" : "none";
-}
-
-document.getElementById("viewMoreBtn").addEventListener("click", () => {
-  visibleCourseCount += COURSE_PAGE_SIZE;
-  renderCourseList(currentCourseMatches);
-});
-
-async function loadCourses(searchTerm = "") {
-  const coursesRef = collection(db, "courses");
-  const q = query(coursesRef, where("department", "==", studentDepartment), where("level", "==", studentLevel));
-  const querySnapshot = await getDocs(q);
-
-  const courseList = document.getElementById("courseList");
-
-  if (querySnapshot.empty) {
-    courseList.innerHTML = `<p>No courses added for ${studentDepartment} · ${studentLevel} yet.</p>`;
-    document.getElementById("viewMoreWrap").style.display = "none";
-    return;
-  }
-
-  const matches = [];
-
-  querySnapshot.forEach((docSnap) => {
-    const course = docSnap.data();
-    const courseId = docSnap.id;
-
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      const matchesCode = String(course.code || "").toLowerCase().includes(term);
-      const matchesTitle = String(course.title || "").toLowerCase().includes(term);
-      if (!matchesCode && !matchesTitle) {
-        return;
+      const bankSnap = await getDoc(doc(db, "settings", "donationInfo"));
+      const bankBox = document.getElementById("donationBankDetails");
+      if (bankSnap.exists()) {
+        const d = bankSnap.data();
+        bankBox.innerHTML = `${escapeHTML(d.bankName)}<br>${escapeHTML(d.accountNumber)}<br>${escapeHTML(d.accountName)}`;
+      } else {
+        bankBox.textContent = "Account details not available yet.";
       }
     }
 
-    matches.push({ id: courseId, course });
-  });
+    document.getElementById("openDonationBtn").addEventListener("click", openDonationModal);
 
-  currentCourseMatches = matches;
-  visibleCourseCount = COURSE_PAGE_SIZE;
-  renderCourseList(matches);
-  updateStats(matches.length, `Your courses`);
+    document.getElementById("closeDonationBtn").addEventListener("click", () => {
+      document.getElementById("donationModal").style.display = "none";
+    });
 
-  if (matches.length === 0 && searchTerm) {
-    courseList.innerHTML = `<p>No courses match "${searchTerm}".</p>`;
-  }
-}
+    document.getElementById("submitDonationBtn").addEventListener("click", async () => {
+      const firstName = document.getElementById("donorFirstName").value.trim();
+      const lastName = document.getElementById("donorLastName").value.trim();
+      const email = document.getElementById("donorEmail").value.trim();
+      const amount = parseFloat(document.getElementById("donorAmount").value);
+      const receiptFile = document.getElementById("donationReceiptFile").files[0];
+      const msg = document.getElementById("donationFormMsg");
+      msg.textContent = "";
 
-async function loadFavoriteCourses(searchTerm = "") {
-  const courseList = document.getElementById("courseList");
+      if (!firstName || !lastName) {
+        msg.textContent = "Please enter your full name.";
+        return;
+      }
+      if (!amount || amount < 50) {
+        msg.textContent = "Amount must be at least ₦50.00.";
+        return;
+      }
+      if (!receiptFile) {
+        msg.textContent = "Please upload your transfer receipt.";
+        return;
+      }
 
-  if (favoriteIds.size === 0) {
-    courseList.innerHTML = "<p>You haven't bookmarked any courses yet. Click the ☆ on a course to save it here.</p>";
-    document.getElementById("viewMoreWrap").style.display = "none";
-    return;
-  }
+      const submitBtn = document.getElementById("submitDonationBtn");
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
 
-  const q = query(collection(db, "courses"), where("department", "==", studentDepartment), where("level", "==", studentLevel));
-  const querySnapshot = await getDocs(q);
+      try {
+        const receiptUrl = await uploadDonationReceipt(receiptFile);
 
-  const matches = [];
-  querySnapshot.forEach((docSnap) => {
-    const courseId = docSnap.id;
-    const course = docSnap.data();
-    if (!favoriteIds.has(courseId)) return;
+        await addDoc(collection(db, "donations"), {
+          firstName,
+          lastName,
+          email: email || null,
+          amount,
+          receiptUrl,
+          studentEmail: auth.currentUser.email,
+          read: false,
+          createdAt: Date.now()
+        });
 
-    if (searchTerm) {
-      const term = searchTerm.trim().toLowerCase();
-      const code = String(course.code || "").toLowerCase();
-      const title = String(course.title || "").toLowerCase();
-      if (!code.includes(term) && !title.includes(term)) return;
+        document.getElementById("donationFormView").style.display = "none";
+        document.getElementById("donationThanksView").style.display = "block";
+
+        document.getElementById("donorFirstName").value = "";
+        document.getElementById("donorLastName").value = "";
+        document.getElementById("donorEmail").value = "";
+        document.getElementById("donorAmount").value = "";
+        document.getElementById("donationReceiptFile").value = "";
+      } catch (error) {
+        msg.textContent = "Something went wrong: " + error.message;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Done";
+      }
+    });
+
+    document.getElementById("donationModal").addEventListener("click", (e) => {
+      const thanksVisible = document.getElementById("donationThanksView").style.display === "block";
+      if (thanksVisible) {
+        document.getElementById("donationModal").style.display = "none";
+      }
+    });
+
+    async function recordRecentlyViewed(courseId, course) {
+      const docRef = doc(db, "recentlyViewed", currentUserId);
+      const docSnap = await getDoc(docRef);
+      let list = docSnap.exists() ? docSnap.data().courses || [] : [];
+
+      list = list.filter((c) => c.id !== courseId);
+      list.unshift({ id: courseId, code: course.code, title: course.title });
+      list = list.slice(0, 5);
+
+      await setDoc(docRef, { courses: list });
+      loadRecentlyViewed();
     }
 
-    matches.push({ id: courseId, course });
-  });
+    async function loadRecentlyViewed() {
+      const container = document.getElementById("recentViewedList");
+      const docRef = doc(db, "recentlyViewed", currentUserId);
+      const docSnap = await getDoc(docRef);
 
-  currentCourseMatches = matches;
-  visibleCourseCount = COURSE_PAGE_SIZE;
-  renderCourseList(matches);
-  updateStats(favoriteIds.size, "Your favorites");
-}
+      if (!docSnap.exists() || !docSnap.data().courses || docSnap.data().courses.length === 0) {
+        container.innerHTML = `<p class="emptyNote">Courses you open will show up here.</p>`;
+        return;
+      }
 
-  function openCourseModal(course) {
-    const modal = document.getElementById("courseModal");
-    const content = document.getElementById("modalContent");
-
-    let html = `<h2 style="margin-top:0;">${escapeHTML(course.code)} — ${escapeHTML(course.title)}</h2>`;
-    html += `<p style="color:#6b7280;">${escapeHTML(course.level)} · ${escapeHTML(course.credit)}</p>`;
-
-    if (course.description) html += `<p>${escapeHTML(course.description)}</p>`;
-    if (course.prerequisites) {
-      html += `<p style="font-size:13px; color:#8a8f98;"><strong>Prerequisites:</strong> ${escapeHTML(course.prerequisites)}</p>`;
-    }
-
-    if (course.noteFileUrl && isSafeHttpUrl(course.noteFileUrl)) {
-      html += `<p><a href="${escapeHTML(course.noteFileUrl)}" target="_blank" rel="noopener noreferrer">📄 Download Notes (${escapeHTML(course.noteFileName || "file")})</a></p>`;
-    }
-
-    if (Array.isArray(course.notes) && course.notes.length > 0) {
-      html += `<h4>Notes</h4>`;
-      course.notes.forEach((note) => {
-        if (note && (note.heading || (Array.isArray(note.body) && note.body[0]))) {
-          html += `<p><strong>${escapeHTML(note.heading || "")}</strong><br>${escapeHTML((Array.isArray(note.body) && note.body[0]) || "")}</p>`;
-        }
+      container.innerHTML = "";
+      docSnap.data().courses.forEach((c) => {
+        const item = document.createElement("div");
+        item.className = "panelItem";
+        item.textContent = `${c.code} — ${c.title}`;
+        item.addEventListener("click", async () => {
+          const fullSnap = await getDoc(doc(db, "courses", c.id));
+          if (fullSnap.exists()) showCourseDetail(c.id, fullSnap.data());
+        });
+        container.appendChild(item);
       });
     }
 
-    if (course.qaFileUrl && isSafeHttpUrl(course.qaFileUrl)) {
-      html += `<p><a href="${escapeHTML(course.qaFileUrl)}" target="_blank" rel="noopener noreferrer">📄 Download Q&amp;A (${escapeHTML(course.qaFileName || "file")})</a></p>`;
+    function updateStats(courseCount, label) {
+      const statsRow = document.getElementById("statsRow");
+      statsRow.innerHTML = `
+      <div class="statCard"><div class="statNum">${courseCount}</div><div class="statLabel">${label}</div></div>
+      <div class="statCard"><div class="statNum">${favoriteIds.size}</div><div class="statLabel">Bookmarked</div></div>
+    `;
     }
 
-    if (Array.isArray(course.qa) && course.qa.length > 0) {
-      html += `<h4>Trial Q&amp;A</h4>`;
-      course.qa.forEach((item, i) => {
-        if (item && (item.q || item.a)) {
-          html += `<p><strong>Q${i + 1}: ${escapeHTML(item.q || "")}</strong><br>${escapeHTML(item.a || "")}</p>`;
-        }
+    function renderCourseList(matches) {
+      const courseList = document.getElementById("courseList");
+      courseList.innerHTML = "";
+
+      if (matches.length === 0) {
+        return;
+      }
+
+      matches.forEach(({ id, course }) => {
+        courseList.appendChild(createCourseCard(id, course));
       });
     }
 
-    content.innerHTML = html;
-    modal.style.display = "flex";
-  }
+    async function loadCourses(searchTerm = "") {
+      const coursesRef = collection(db, "courses");
+      const q = query(coursesRef, where("department", "==", studentDepartment), where("level", "==", studentLevel));
+      const querySnapshot = await getDocs(q);
 
-  document.getElementById("closeModalBtn").addEventListener("click", () => {
-    document.getElementById("courseModal").style.display = "none";
-  });
+      const courseList = document.getElementById("courseList");
 
-  document.getElementById("courseModal").addEventListener("click", (e) => {
-    if (e.target.id === "courseModal") {
-      document.getElementById("courseModal").style.display = "none";
+      if (querySnapshot.empty) {
+        courseList.innerHTML = `<p>No courses added for ${studentDepartment} · ${studentLevel} yet.</p>`;
+        return;
+      }
+
+      const matches = [];
+
+      querySnapshot.forEach((docSnap) => {
+        const course = docSnap.data();
+        const courseId = docSnap.id;
+
+        if (searchTerm) {
+          const term = searchTerm.toLowerCase();
+          const matchesCode = String(course.code || "").toLowerCase().includes(term);
+          const matchesTitle = String(course.title || "").toLowerCase().includes(term);
+          if (!matchesCode && !matchesTitle) {
+            return;
+          }
+        }
+
+        matches.push({ id: courseId, course });
+      });
+
+      currentCourseMatches = matches;
+      renderCourseList(matches);
+      updateStats(matches.length, `Your courses`);
+
+      if (matches.length === 0 && searchTerm) {
+        courseList.innerHTML = `<p>No courses match "${searchTerm}".</p>`;
+      }
     }
-  });
 
-  const searchInput = document.getElementById("searchInput");
-  searchInput.addEventListener("input", () => {
-    const activeView = document.querySelector("#sidebarNav .level-btn.active")?.getAttribute("data-view");
-    if (activeView === "FAVORITES") {
-      loadFavoriteCourses(searchInput.value);
-    } else {
-      loadCourses(searchInput.value);
+    async function loadFavoriteCourses(searchTerm = "") {
+      const courseList = document.getElementById("courseList");
+
+      if (favoriteIds.size === 0) {
+        courseList.innerHTML = "<p>You haven't bookmarked any courses yet. Click the ☆ on a course to save it here.</p>";
+        return;
+      }
+
+      const q = query(collection(db, "courses"), where("department", "==", studentDepartment), where("level", "==", studentLevel));
+      const querySnapshot = await getDocs(q);
+
+      const matches = [];
+      querySnapshot.forEach((docSnap) => {
+        const courseId = docSnap.id;
+        const course = docSnap.data();
+        if (!favoriteIds.has(courseId)) return;
+
+        if (searchTerm) {
+          const term = searchTerm.trim().toLowerCase();
+          const code = String(course.code || "").toLowerCase();
+          const title = String(course.title || "").toLowerCase();
+          if (!code.includes(term) && !title.includes(term)) return;
+        }
+
+        matches.push({ id: courseId, course });
+      });
+
+      currentCourseMatches = matches;
+      renderCourseList(matches);
+      updateStats(favoriteIds.size, "Your favorites");
     }
-  });
+
+    let openCourseId = null;
+
+    function buildCourseDetailHTML(course) {
+      let html = `<h2>${escapeHTML(course.code)} — ${escapeHTML(course.title)}</h2>`;
+      html += `<p style="color:var(--text-muted);">${escapeHTML(course.level)} · ${escapeHTML(course.credit)}${course.academicSession ? ` <span class="sessionTag">${escapeHTML(course.academicSession)}</span>` : ""}</p>`;
+
+      if (course.description) html += `<p>${escapeHTML(course.description)}</p>`;
+      if (course.prerequisites) {
+        html += `<p style="font-size:13px; color:var(--text-muted);"><strong>Prerequisites:</strong> ${escapeHTML(course.prerequisites)}</p>`;
+      }
+
+      const noteFiles = Array.isArray(course.noteFiles) && course.noteFiles.length > 0
+        ? course.noteFiles
+        : (course.noteFileUrl ? [{ url: course.noteFileUrl, name: course.noteFileName }] : []);
+
+      noteFiles.forEach((file) => {
+        if (file && file.url && isSafeHttpUrl(file.url)) {
+          html += `<p><a href="${escapeHTML(file.url)}" target="_blank" rel="noopener noreferrer">📄 Download Notes (${escapeHTML(file.name || "file")})</a></p>`;
+        }
+      });
+
+      if (Array.isArray(course.notes) && course.notes.length > 0) {
+        html += `<h4>Notes</h4>`;
+        course.notes.forEach((note) => {
+          if (note && (note.heading || (Array.isArray(note.body) && note.body[0]))) {
+            html += `<p><strong>${escapeHTML(note.heading || "")}</strong><br>${escapeHTML((Array.isArray(note.body) && note.body[0]) || "")}</p>`;
+          }
+        });
+      }
+
+      const qaFiles = Array.isArray(course.qaFiles) && course.qaFiles.length > 0
+        ? course.qaFiles
+        : (course.qaFileUrl ? [{ url: course.qaFileUrl, name: course.qaFileName }] : []);
+
+      qaFiles.forEach((file) => {
+        if (file && file.url && isSafeHttpUrl(file.url)) {
+          html += `<p><a href="${escapeHTML(file.url)}" target="_blank" rel="noopener noreferrer">📄 Download Q&amp;A (${escapeHTML(file.name || "file")})</a></p>`;
+        }
+      });
+
+      if (Array.isArray(course.qa) && course.qa.length > 0) {
+        html += `<h4>Trial Q&amp;A</h4>`;
+        course.qa.forEach((item, i) => {
+          if (item && (item.q || item.a)) {
+            html += `<p><strong>Q${i + 1}: ${escapeHTML(item.q || "")}</strong><br>${escapeHTML(item.a || "")}</p>`;
+          }
+        });
+      }
+
+      return html;
+    }
+
+    // Shows a course as its own page within the dashboard (replacing the
+    // course list) instead of a modal, and reflects it in the URL hash so
+    // it's linkable and works with the browser's back/forward buttons.
+    function showCourseDetail(courseId, course, options = {}) {
+      const { updateHash = true } = options;
+
+      document.getElementById("courseDetailContent").innerHTML = buildCourseDetailHTML(course);
+      document.getElementById("courseList").style.display = "none";
+      document.querySelector(".toolbar").style.display = "none";
+      document.getElementById("statsRow").style.display = "none";
+      document.getElementById("courseDetailView").style.display = "flex";
+
+      openCourseId = courseId;
+      if (updateHash) {
+        window.location.hash = `course/${encodeURIComponent(courseId)}`;
+      }
+      document.querySelector(".mainArea").scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function showCourseListView() {
+      document.getElementById("courseDetailView").style.display = "none";
+      document.getElementById("courseList").style.display = "grid";
+      document.querySelector(".toolbar").style.display = "block";
+      document.getElementById("statsRow").style.display = "flex";
+      openCourseId = null;
+
+      if (window.location.hash.startsWith("#course/")) {
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    }
+
+    document.getElementById("backToCoursesBtn").addEventListener("click", showCourseListView);
+
+    // Keeps the course page in sync with the URL hash, so a direct link,
+    // a page refresh, or the browser's back/forward buttons all work.
+    async function handleHashRoute() {
+      if (!currentUserId) return;
+      const hash = window.location.hash;
+
+      if (hash.startsWith("#course/")) {
+        const courseId = decodeURIComponent(hash.slice("#course/".length));
+        if (courseId === openCourseId) return;
+
+        const match = currentCourseMatches.find((m) => m.id === courseId);
+        if (match) {
+          showCourseDetail(courseId, match.course, { updateHash: false });
+          recordRecentlyViewed(courseId, match.course);
+          return;
+        }
+
+        try {
+          const snap = await getDoc(doc(db, "courses", courseId));
+          if (snap.exists()) {
+            showCourseDetail(courseId, snap.data(), { updateHash: false });
+            recordRecentlyViewed(courseId, snap.data());
+          } else {
+            showCourseListView();
+          }
+        } catch (error) {
+          console.error("Couldn't load linked course:", error);
+          showCourseListView();
+        }
+      } else if (openCourseId !== null) {
+        showCourseListView();
+      }
+    }
+
+    window.addEventListener("hashchange", handleHashRoute);
+
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("input", () => {
+      const activeView = document.querySelector("#sidebarNav .level-btn.active")?.getAttribute("data-view");
+      if (activeView === "FAVORITES") {
+        loadFavoriteCourses(searchInput.value);
+      } else {
+        loadCourses(searchInput.value);
+      }
+    });
 
     let selectedDepartment = null;
-  let selectedLevelOnboard = null;
+    let selectedLevelOnboard = null;
 
-  async function checkStudentProfile(uid) {
-    const profileRef = doc(db, "studentProfiles", uid);
-    const profileSnap = await getDoc(profileRef);
-    return profileSnap.exists() ? profileSnap.data() : null;
-  }
+    async function checkStudentProfile(uid) {
+      const profileRef = doc(db, "studentProfiles", uid);
+      const profileSnap = await getDoc(profileRef);
+      return profileSnap.exists() ? profileSnap.data() : null;
+    }
 
-  function showOnboarding() {
-    document.getElementById("onboardingScreen").style.display = "block";
-    document.getElementById("departmentChoices").style.display = "flex";
-    document.getElementById("levelChoices").style.display = "none";
-    document.getElementById("onboardingConfirm").style.display = "none";
-    document.getElementById("onboardingTitle").textContent = "Choose your department";
-  }
+    function showOnboarding() {
+      document.getElementById("onboardingScreen").style.display = "block";
+      document.getElementById("departmentChoices").style.display = "flex";
+      document.getElementById("levelChoices").style.display = "none";
+      document.getElementById("onboardingConfirm").style.display = "none";
+      document.getElementById("onboardingTitle").textContent = "Choose your department";
+    }
 
-  document.querySelectorAll('.onboardBtn[data-dept]').forEach((btn) => {
-    btn.addEventListener("click", () => {
-      selectedDepartment = btn.getAttribute("data-dept");
-      document.getElementById("departmentChoices").style.display = "none";
+    document.querySelectorAll('.onboardBtn[data-dept]').forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedDepartment = btn.getAttribute("data-dept");
+        document.getElementById("departmentChoices").style.display = "none";
+        document.getElementById("levelChoices").style.display = "flex";
+        document.getElementById("onboardingTitle").textContent = "Choose your level";
+      });
+    });
+
+    document.querySelectorAll('.onboardBtn[data-level]').forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selectedLevelOnboard = btn.getAttribute("data-level");
+        document.getElementById("levelChoices").style.display = "none";
+        document.getElementById("onboardingConfirm").style.display = "block";
+        document.getElementById("onboardingTitle").textContent = "Confirm your choice";
+        document.getElementById("onboardingSummary").textContent = `${selectedDepartment} — ${selectedLevelOnboard}`;
+      });
+    });
+
+    document.getElementById("backOnboardBtn").addEventListener("click", () => {
+      selectedLevelOnboard = null;
+      document.getElementById("onboardingConfirm").style.display = "none";
       document.getElementById("levelChoices").style.display = "flex";
       document.getElementById("onboardingTitle").textContent = "Choose your level";
     });
-  });
 
-  document.querySelectorAll('.onboardBtn[data-level]').forEach((btn) => {
-    btn.addEventListener("click", () => {
-      selectedLevelOnboard = btn.getAttribute("data-level");
-      document.getElementById("levelChoices").style.display = "none";
-      document.getElementById("onboardingConfirm").style.display = "block";
-      document.getElementById("onboardingTitle").textContent = "Confirm your choice";
-      document.getElementById("onboardingSummary").textContent = `${selectedDepartment} — ${selectedLevelOnboard}`;
-    });
-  });
+    document.getElementById("confirmOnboardBtn").addEventListener("click", async () => {
+      const uid = auth.currentUser.uid;
+      await setDoc(doc(db, "studentProfiles", uid), {
+        department: selectedDepartment,
+        level: selectedLevelOnboard,
+        createdAt: Date.now()
+      });
 
-  document.getElementById("backOnboardBtn").addEventListener("click", () => {
-    selectedLevelOnboard = null;
-    document.getElementById("onboardingConfirm").style.display = "none";
-    document.getElementById("levelChoices").style.display = "flex";
-    document.getElementById("onboardingTitle").textContent = "Choose your level";
-  });
-
-  document.getElementById("confirmOnboardBtn").addEventListener("click", async () => {
-    const uid = auth.currentUser.uid;
-    await setDoc(doc(db, "studentProfiles", uid), {
-      department: selectedDepartment,
-      level: selectedLevelOnboard
-    });
-
-    document.getElementById("onboardingScreen").style.display = "none";
-    appContent.style.display = "block";
+      document.getElementById("onboardingScreen").style.display = "none";
+      appContent.style.display = "block";
 
       const namePart = auth.currentUser.email.split("@")[0];
       document.getElementById("welcomeMsg").textContent = `Hello, ${namePart}`;
 
-    await loadUserFavorites(uid);
-    startDashboard(selectedDepartment, selectedLevelOnboard);
-  });
+      await loadUserFavorites(uid);
+      startDashboard(selectedDepartment, selectedLevelOnboard);
+    });
 
-  onAuthStateChanged(auth, async (user) => {
-    if (user && !user.emailVerified) {
-      authError.style.color = "#c0392b";
-     authError.innerHTML = `Please verify your email before logging in. <a href="#" id="resendVerifyLink" style="color:#0d9488;">Resend verification email</a>`;
-      const unverifiedUser = user;
-      const resendLink = document.getElementById("resendVerifyLink");
+    onAuthStateChanged(auth, async (user) => {
+      if (user && !user.emailVerified) {
+        authError.style.color = "#c0392b";
+        authError.innerHTML = `Please verify your email before logging in. <a href="#" id="resendVerifyLink" style="color:#0d9488;">Resend verification email</a>`;
+        const unverifiedUser = user;
+        const resendLink = document.getElementById("resendVerifyLink");
 
-      resendLink.addEventListener("click", async (e) => {
-        e.preventDefault();
-        resendLink.style.pointerEvents = "none";
-        try {
-     await sendEmailVerification(unverifiedUser);
-          authError.style.color = "#2e7d5b";
-          authError.textContent = "Verification email resent — check your inbox.";
-        } catch (error) {
-          authError.style.color = "#c0392b";
-          authError.textContent = "Couldn't resend the verification email. Please try again shortly.";
-        } finally {
-          resendLink.style.pointerEvents = "";
-          await signOut(auth);
-        }
-      });
+        resendLink.addEventListener("click", async (e) => {
+          e.preventDefault();
+          resendLink.style.pointerEvents = "none";
+          try {
+            await sendEmailVerification(unverifiedUser);
+            authError.style.color = "#2e7d5b";
+            authError.textContent = "Verification email resent — check your inbox.";
+          } catch (error) {
+            authError.style.color = "#c0392b";
+            authError.textContent = "Couldn't resend the verification email. Please try again shortly.";
+          } finally {
+            resendLink.style.pointerEvents = "";
+            await signOut(auth);
+          }
+        });
 
-      return;
-    }
-
-    if (user) {
-      authBox.style.display = "none";
-      const namePart = user.email.split("@")[0];
-
-      const profile = await checkStudentProfile(user.uid);
-      if (!profile) {
-        appContent.style.display = "none";
-        showOnboarding();
         return;
       }
 
-      document.getElementById("onboardingScreen").style.display = "none";
-      appContent.style.display = "block";
-      document.getElementById("welcomeMsg").textContent = `Hello, ${namePart}`;
-      await loadUserFavorites(user.uid);
-      startDashboard(profile.department, profile.level);
-    } else {
-      authBox.style.display = "block";
-      appContent.style.display = "none";
-      document.getElementById("onboardingScreen").style.display = "none";
-      authError.style.color = "#c0392b";
-    }
-  });
-</script>
+      if (user) {
+        authBox.style.display = "none";
+        const namePart = user.email.split("@")[0];
 
-  </body>
-  </html>
+        const profile = await checkStudentProfile(user.uid);
+        if (!profile) {
+          appContent.style.display = "none";
+          showOnboarding();
+          return;
+        }
+
+        document.getElementById("onboardingScreen").style.display = "none";
+        appContent.style.display = "block";
+        document.getElementById("welcomeMsg").textContent = `Hello, ${namePart}`;
+        await loadUserFavorites(user.uid);
+        startDashboard(profile.department, profile.level);
+      } else {
+        authBox.style.display = "block";
+        appContent.style.display = "none";
+        document.getElementById("onboardingScreen").style.display = "none";
+        authError.style.color = "#c0392b";
+      }
+    });
+  </script>
+
+</body>
+
+</html>
