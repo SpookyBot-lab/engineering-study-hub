@@ -1612,7 +1612,7 @@ div.style.borderLeft = `4px solid ${levelColors[course.level] || "#0d9488"}`;
       // Support both the current multi-file schema (noteFiles/qaFiles) and
       // older courses saved with a single noteFileUrl/qaFileUrl.
       if (Array.isArray(courseData.noteFiles) && courseData.noteFiles.length > 0) {
-        currentNoteFiles = courseData.noteFiles.map((f) => ({ url: f.url, name: f.name, type: f.type }));
+        currentNoteFiles = courseData.noteFiles.map((f) => ({ url: f.url, name: f.name, type: f.type || "file" }));
       } else if (courseData.noteFileUrl) {
         currentNoteFiles = [{ url: courseData.noteFileUrl, name: courseData.noteFileName || "file" }];
       } else {
@@ -1622,7 +1622,7 @@ div.style.borderLeft = `4px solid ${levelColors[course.level] || "#0d9488"}`;
       renderNoteFilesList();
 
       if (Array.isArray(courseData.qaFiles) && courseData.qaFiles.length > 0) {
-        currentQaFiles = courseData.qaFiles.map((f) => ({ url: f.url, name: f.name, type: f.type }));
+        currentQaFiles = courseData.qaFiles.map((f) => ({ url: f.url, name: f.name, type: f.type || "file" }));
       } else if (courseData.qaFileUrl) {
         currentQaFiles = [{ url: courseData.qaFileUrl, name: courseData.qaFileName || "file" }];
       } else {
@@ -1879,11 +1879,11 @@ onAuthStateChanged(auth, async (user) => {
       // add multiple documents over time without losing earlier ones.
       for (const file of newNoteFiles) {
         const url = await uploadToCloudinary(file);
-        currentNoteFiles.push({ url, name: file.name });
+        currentNoteFiles.push({ url, name: file.name, type: "file" });
       }
       for (const file of newQaFiles) {
         const url = await uploadToCloudinary(file);
-        currentQaFiles.push({ url, name: file.name });
+        currentQaFiles.push({ url, name: file.name, type: "file" });
       }
 
             // Gather all note sections currently in the form
