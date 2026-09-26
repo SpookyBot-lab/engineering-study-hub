@@ -1311,7 +1311,13 @@ document.getElementById("addAdminBtn").addEventListener("click", async () => {
   const CLOUDINARY_UPLOAD_PRESET = "study_hub_uploads";
 
   async function uploadToCloudinary(file) {
-  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/auto/upload`;
+  // Uploaded to /raw/upload rather than /auto/upload: PDFs/Word docs here
+  // are just stored for download, never transformed into thumbnails, so
+  // there's no need for Cloudinary to parse the file's internals — "auto"
+  // treats PDFs as images and tries to rasterize them, which some
+  // perfectly valid PDFs fail (Cloudinary throws "Invalid PDF file").
+  // "raw" stores the bytes as-is and skips that parsing step entirely.
+  const url = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/raw/upload`;
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
