@@ -1322,7 +1322,18 @@ document.getElementById("addAdminBtn").addEventListener("click", async () => {
   });
 
   if (!response.ok) {
-    throw new Error("Cloudinary upload failed: " + response.statusText);
+    // Cloudinary returns a JSON body with the real reason (bad/missing
+    // preset, disallowed format, file too large, etc.) — statusText alone
+    // is just "Bad Request" and hides that. Surface it so errors are
+    // actually actionable.
+    let detail = response.statusText;
+    try {
+      const errBody = await response.json();
+      if (errBody?.error?.message) detail = errBody.error.message;
+    } catch {
+      // response wasn't JSON; fall back to statusText
+    }
+    throw new Error("Cloudinary upload failed: " + detail);
   }
 
   const data = await response.json();
